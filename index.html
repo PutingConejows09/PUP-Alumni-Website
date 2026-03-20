@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUP Alumni Connect</title>
+<!-- Google Fonts with fallback -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --maroon:#7B1525;--maroon-deep:#4a0d16;--maroon-light:#9e2035;
+  --gold:#C9A84C;--gold-light:#e4c06e;--gold-pale:#f5e9c8;
+  --cream:#fdf8f1;--ink:#1a0a0e;--muted:#8a7070;
+  --white:#ffffff;--radius:12px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+
+/* ─── CURSOR ─────────────────────────────────── */
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s,width .3s,height .3s,opacity .3s;}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(201,168,76,.5);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .15s ease-out,width .3s,height .3s;}
+
+/* ─── PRELOADER ───────────────────────────────── */
+#preloader{position:fixed;inset:0;background:var(--maroon-deep);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;}
+.preloader-seal{width:100px;height:100px;border-radius:50%;object-fit:cover;animation:sealSpin 2s ease-in-out;}
+@keyframes sealSpin{0%{transform:scale(0) rotate(-180deg);opacity:0;}60%{transform:scale(1.1) rotate(5deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.preloader-bar{width:200px;height:2px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;}
+.preloader-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0;border-radius:2px;}
+.preloader-text{font-family:'Cormorant Garamond',serif;color:rgba(255,255,255,.7);font-size:13px;letter-spacing:4px;text-transform:uppercase;}
+
+/* ─── NAV ─────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between;transition:all .4s cubic-bezier(.4,0,.2,1);}
+nav.scrolled{background:rgba(75,13,22,.97);backdrop-filter:blur(20px);height:60px;box-shadow:0 4px 30px rgba(0,0,0,.3);}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.4);transition:border-color .3s,transform .3s;}
+.nav-logo:hover img{border-color:var(--gold);transform:scale(1.05);}
+.nav-brand{display:flex;flex-direction:column;}
+.nav-brand-name{font-family:'Cormorant Garamond',serif;color:#fff;font-size:18px;font-weight:600;line-height:1;}
+.nav-brand-sub{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;}
+.nav-links{display:flex;gap:2px;align-items:center;}
+.nav-link{background:none;border:none;color:rgba(255,255,255,.75);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .25s;position:relative;letter-spacing:.3px;}
+.nav-link::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:0;height:1.5px;background:var(--gold);border-radius:2px;transition:width .3s;}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.08);}
+.nav-link:hover::after,.nav-link.active::after{width:60%;}
+.nav-link.active{color:#fff;}
+.nav-cta{background:var(--gold);border:none;color:var(--maroon-deep);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 20px;border-radius:8px;cursor:pointer;transition:all .3s;letter-spacing:.3px;}
+.nav-cta:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.35);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
+.hamburger span{width:24px;height:1.5px;background:#fff;border-radius:2px;transition:all .3s;}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(74,13,22,.98);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;}
+.mobile-menu.open{display:flex;}
+.mobile-menu .nav-link{font-size:22px;font-family:'Cormorant Garamond',serif;padding:12px 24px;color:#fff;}
+
+/* ─── SECTIONS ────────────────────────────────── */
+.section{display:none;min-height:100vh;}
+.section.active{display:block;}
+
+/* ─── HERO ────────────────────────────────────── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:var(--maroon-deep);}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,#5a1020 0%,var(--maroon-deep) 70%);}
+.hero-particles{position:absolute;inset:0;overflow:hidden;}
+.hero-particles span{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:floatParticle linear infinite;}
+@keyframes floatParticle{0%{transform:translateY(100vh) translateX(0);opacity:0;}10%{opacity:.6;}90%{opacity:.3;}100%{transform:translateY(-20px) translateX(60px);opacity:0;}}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:60px 60px;}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem;max-width:900px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:7px 18px;border-radius:30px;margin-bottom:2rem;opacity:0;}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.5;}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,6rem);color:#fff;line-height:1.05;margin-bottom:1.5rem;font-weight:600;opacity:0;}
+.hero h1 .line{display:block;overflow:hidden;}
+.hero h1 .word{display:inline-block;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{color:rgba(255,255,255,.6);font-size:clamp(15px,2vw,17px);line-height:1.8;max-width:580px;margin:0 auto 2.5rem;opacity:0;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;}
+.btn-primary{background:var(--gold);color:var(--maroon-deep);border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:14px 32px;border-radius:8px;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;position:relative;overflow:hidden;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .4s;}
+.btn-primary:hover::before{transform:translateX(0);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(201,168,76,.45);}
+.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);font-family:'DM Sans',sans-serif;font-size:14px;padding:14px 32px;border-radius:8px;cursor:pointer;transition:all .35s;backdrop-filter:blur(4px);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px);box-shadow:0 12px 35px rgba(201,168,76,.15);}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;}
+.hero-scroll span{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(201,168,76,.8),transparent);animation:scrollDown 2s ease-in-out infinite;}
+@keyframes scrollDown{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}50.01%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* ─── STATS BAR ───────────────────────────────── */
+.stats-bar{background:var(--ink);padding:0;}
+.stats-inner{display:flex;justify-content:center;flex-wrap:wrap;}
+.stat-item{flex:1;min-width:160px;padding:2rem 1.5rem;text-align:center;border-right:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;transition:background .3s;}
+.stat-item:last-child{border-right:none;}
+.stat-item::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(201,168,76,.06),transparent);opacity:0;transition:opacity .4s;}
+.stat-item:hover::before{opacity:1;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.8rem);color:var(--gold);font-weight:600;line-height:1;display:block;}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+
+/* ─── CONTENT COMMON ──────────────────────────── */
+.content{padding:5rem 2rem;max-width:1200px;margin:0 auto;}
+.section-eyebrow{font-size:11px;color:var(--maroon);letter-spacing:3px;text-transform:uppercase;margin-bottom:.6rem;display:block;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:var(--ink);margin-bottom:.5rem;font-weight:600;line-height:1.15;}
+.section-sub{color:var(--muted);font-size:15px;margin-bottom:3rem;max-width:500px;line-height:1.7;}
+.divider{width:48px;height:2px;background:linear-gradient(90deg,var(--maroon),var(--gold));margin-bottom:3rem;border-radius:2px;}
+
+/* ─── FEATURE CARDS ───────────────────────────── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;}
+.card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);padding:1.8rem;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;cursor:pointer;}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,21,37,.04),transparent);opacity:0;transition:opacity .4s;}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--maroon),var(--gold));transform:scaleX(0);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(123,21,37,.1);border-color:rgba(123,21,37,.15);}
+.card:hover::before{opacity:1;}
+.card:hover::after{transform:scaleX(1);}
+.card-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(123,21,37,.08),rgba(201,168,76,.08));display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;font-size:22px;transition:transform .3s;}
+.card:hover .card-icon{transform:scale(1.1) rotate(3deg);}
+.card h3{font-size:15px;font-weight:500;margin-bottom:8px;color:var(--ink);}
+.card p{font-size:13px;color:var(--muted);line-height:1.65;}
+.card-arrow{position:absolute;top:1.5rem;right:1.5rem;width:28px;height:28px;border-radius:50%;background:rgba(123,21,37,.06);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transform:translateX(-8px);transition:all .3s;}
+.card:hover .card-arrow{opacity:1;transform:translateX(0);}
+
+/* ─── DIRECTORY ───────────────────────────────── */
+.search-bar{display:flex;gap:12px;margin-bottom:2rem;flex-wrap:wrap;}
+.search-input-wrap{flex:1;min-width:220px;position:relative;}
+.search-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.4;width:16px;height:16px;}
+.search-input{width:100%;padding:12px 14px 12px 42px;border-radius:10px;border:1px solid rgba(0,0,0,.1);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff;color:var(--ink);transition:all .3s;outline:none;}
+.search-input:focus{border-color:var(--maroon);box-shadow:0 0 0 3px rgba(123,21,37,.08);}
+.filter-select{padding:12px 16px;border-radius:10px;border:1px solid rgba(0,0,0,.1);font-family:'DM Sans',sans-serif;font-size:13px;background:#fff;color:var(--ink);cursor:pointer;outline:none;transition:all .3s;}
+.filter-select:focus{border-color:var(--maroon);}
+.alumni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
+.alumni-card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);padding:1.4rem;text-align:center;transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.alumni-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,21,37,.03),transparent);opacity:0;transition:opacity .3s;}
+.alumni-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(123,21,37,.1);border-color:rgba(201,168,76,.4);}
+.alumni-card:hover::after{opacity:1;}
+.alumni-avatar{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;border:2px solid transparent;transition:border-color .3s,transform .3s;}
+.alumni-card:hover .alumni-avatar{border-color:var(--gold);transform:scale(1.05);}
+.alumni-name{font-size:14px;font-weight:500;margin-bottom:3px;}
+.alumni-course{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.alumni-batch{font-size:11px;color:var(--gold);font-weight:500;}
+.alumni-company{font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.05);}
+
+/* ─── EVENTS ──────────────────────────────────── */
+.events-list{display:flex;flex-direction:column;gap:14px;}
+.event-card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.5rem;transition:all .35s cubic-bezier(.4,0,.2,1);overflow:hidden;position:relative;}
+.event-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--maroon),var(--gold));transform:scaleY(0);transition:transform .3s;}
+.event-card:hover{transform:translateX(6px);box-shadow:0 12px 35px rgba(123,21,37,.1);border-color:rgba(123,21,37,.15);}
+.event-card:hover::before{transform:scaleY(1);}
+.event-date{background:linear-gradient(135deg,var(--maroon),var(--maroon-light));color:#fff;border-radius:10px;padding:10px 16px;text-align:center;min-width:62px;flex-shrink:0;}
+.event-date .day{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;line-height:1;}
+.event-date .month{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;opacity:.8;}
+.event-info{flex:1;}
+.event-info h4{font-size:15px;font-weight:500;margin-bottom:4px;}
+.event-info p{font-size:12px;color:var(--muted);}
+.event-tag{font-size:11px;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;font-weight:500;}
+.tag-online{background:#e8f5e9;color:#2e7d32;}
+.tag-onsite{background:#fff3e0;color:#b06000;}
+.event-rsvp{background:var(--maroon);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;transition:all .3s;flex-shrink:0;opacity:0;transform:translateX(10px);}
+.event-card:hover .event-rsvp{opacity:1;transform:translateX(0);}
+.event-rsvp:hover{background:var(--maroon-light);}
+
+/* ─── JOBS ────────────────────────────────────── */
+.jobs-list{display:flex;flex-direction:column;gap:14px;}
+.job-card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.2rem;transition:all .35s cubic-bezier(.4,0,.2,1);flex-wrap:wrap;}
+.job-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.08);border-color:rgba(201,168,76,.3);}
+.job-logo{width:46px;height:46px;border-radius:10px;border:1px solid rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;}
+.job-body{flex:1;min-width:200px;}
+.job-title{font-size:15px;font-weight:500;margin-bottom:3px;}
+.job-meta{font-size:12px;color:var(--muted);}
+.job-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.job-tag{font-size:11px;padding:3px 9px;border-radius:4px;background:rgba(123,21,37,.06);color:var(--maroon);font-weight:400;}
+.apply-btn{background:var(--maroon);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 22px;border-radius:8px;cursor:pointer;transition:all .3s;flex-shrink:0;position:relative;overflow:hidden;}
+.apply-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .35s;}
+.apply-btn:hover::before{transform:translateX(0);}
+.apply-btn:hover{background:var(--maroon-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(123,21,37,.3);}
+
+/* ─── NEWS ────────────────────────────────────── */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.news-card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);overflow:hidden;transition:all .35s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.news-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(123,21,37,.1);}
+.news-img{height:140px;background:linear-gradient(135deg,var(--maroon),#8a3040);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden;transition:transform .5s;}
+.news-card:hover .news-img{transform:scale(1.04);}
+.news-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.3),transparent);}
+.news-body{padding:1.3rem;}
+.news-category{font-size:10px;color:var(--maroon);text-transform:uppercase;letter-spacing:2px;margin-bottom:7px;font-weight:500;}
+.news-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;line-height:1.4;margin-bottom:7px;transition:color .2s;}
+.news-card:hover .news-title{color:var(--maroon);}
+.news-date{font-size:11px;color:var(--muted);}
+
+/* ─── HALL OF FAME ────────────────────────────── */
+.achieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+.achieve-card{background:#fff;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);padding:1.6rem;display:flex;gap:1.2rem;transition:all .35s cubic-bezier(.4,0,.2,1);}
+.achieve-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(123,21,37,.1);border-color:rgba(201,168,76,.3);}
+.achieve-avatar{width:58px;height:58px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;border:2px solid transparent;transition:border-color .3s;}
+.achieve-card:hover .achieve-avatar{border-color:var(--gold);}
+.achieve-name{font-size:15px;font-weight:500;margin-bottom:4px;}
+.achieve-role{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+.achieve-badge{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.08));color:#7a5e10;font-size:11px;padding:4px 10px;border-radius:4px;font-weight:500;}
+
+/* ─── ALUMNI ID FORM ──────────────────────────── */
+.id-section-bg{background:linear-gradient(135deg,#fdf8f1 0%,#f5ede0 100%);}
+.id-form-wrapper{display:grid;grid-template-columns:1fr 1.4fr;gap:3rem;align-items:start;}
+@media(max-width:800px){.id-form-wrapper{grid-template-columns:1fr;}}
+.id-card-preview{background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));border-radius:18px;padding:2rem;color:#fff;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(74,13,22,.4);transition:transform .4s,box-shadow .4s;}
+.id-card-preview:hover{transform:perspective(800px) rotateY(-3deg) rotateX(2deg) scale(1.02);box-shadow:0 40px 100px rgba(74,13,22,.5);}
+.id-card-preview::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;border:40px solid rgba(201,168,76,.08);}
+.id-card-preview::after{content:'';position:absolute;bottom:-60px;left:-20px;width:200px;height:200px;border-radius:50%;background:rgba(201,168,76,.04);}
+.id-card-shine{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 50%,rgba(201,168,76,.04) 100%);}
+.id-card-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;position:relative;z-index:1;}
+.id-card-logo img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.5);}
+.id-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:1.2rem;position:relative;z-index:1;}
+.id-card-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:5px;min-height:30px;position:relative;z-index:1;transition:all .3s;}
+.id-card-course{font-size:12px;opacity:0.6;margin-bottom:4px;min-height:16px;position:relative;z-index:1;}
+.id-card-batch{font-size:12px;color:var(--gold-light);min-height:16px;position:relative;z-index:1;}
+.id-card-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:1;}
+.id-card-number{font-size:10px;opacity:0.35;font-family:monospace;letter-spacing:2px;}
+.id-card-valid{font-size:9px;text-align:right;opacity:0.4;text-transform:uppercase;letter-spacing:1px;}
+.id-info-box{margin-top:1.5rem;padding:1.2rem 1.4rem;background:rgba(201,168,76,.08);border-radius:10px;border:1px solid rgba(201,168,76,.2);}
+.id-info-box div:first-child{font-size:12px;font-weight:500;color:#8a6a10;margin-bottom:8px;}
+.id-info-box ul{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.id-info-box li{font-size:11px;color:#a07820;padding-left:16px;position:relative;line-height:1.6;}
+.id-info-box li::before{content:'✓';position:absolute;left:0;color:var(--gold);}
+.form-panel{background:#fff;border-radius:16px;padding:2rem;border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 24px rgba(0,0,0,.04);}
+.form-group{margin-bottom:1.1rem;}
+.form-label{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:5px;display:block;letter-spacing:.2px;}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border-radius:9px;border:1px solid rgba(0,0,0,.1);font-family:'DM Sans',sans-serif;font-size:13px;background:#fafafa;color:var(--ink);transition:all .3s;outline:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--maroon);background:#fff;box-shadow:0 0 0 3px rgba(123,21,37,.06);}
+.form-textarea{min-height:80px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+.form-submit{width:100%;background:linear-gradient(135deg,var(--maroon),var(--maroon-light));color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:15px;border-radius:10px;cursor:pointer;transition:all .35s;margin-top:.8rem;letter-spacing:.3px;position:relative;overflow:hidden;}
+.form-submit::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .4s;}
+.form-submit:hover::before{transform:translateX(0);}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(123,21,37,.4);}
+.form-note{font-size:11px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;}
+.success-box{display:none;background:linear-gradient(135deg,#f0faf4,#e8f5ed);border:1px solid #a5d6b5;border-radius:12px;padding:2rem;text-align:center;margin-top:1rem;}
+.success-box.show{display:block;animation:successPop .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes successPop{0%{transform:scale(.9);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+/* ─── PAGE TRANSITIONS ────────────────────────── */
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.section.active>.hero,.section.active>.stats-bar,.section.active>.content,.section.active>.id-section-bg{animation:fadeSlideIn .5s cubic-bezier(.4,0,.2,1) forwards;}
+
+/* ─── FOOTER ──────────────────────────────────── */
+footer{background:var(--ink);color:rgba(255,255,255,.5);text-align:center;padding:2rem;font-size:12px;letter-spacing:.5px;}
+footer span{color:var(--gold);}
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media(max-width:900px){
+  .nav-links,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .stat-item{min-width:140px;padding:1.5rem 1rem;}
+}
+@media(max-width:600px){
+  .content{padding:3rem 1.2rem;}
+  .hero h1{font-size:clamp(2.2rem,10vw,3.5rem);}
+  .hero-btns{flex-direction:column;align-items:center;}
+  .event-card{flex-wrap:wrap;}
+  .event-rsvp{opacity:1;transform:none;width:100%;}
+  .job-card{flex-direction:column;align-items:flex-start;}
+}
+@media(max-width:400px){
+  .stat-item{min-width:110px;}
+  .alumni-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* AOS fallback — ensure elements visible if AOS never loads */
+body:not(.aos-initialized) [data-aos]{opacity:1!important;transform:translateY(0)!important;}
+
+/* ─── MODAL OVERLAY ──────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,5,8,.72);z-index:5000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .35s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(6px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:#fff;border-radius:20px;width:100%;max-width:760px;max-height:90vh;overflow-y:auto;transform:translateY(28px) scale(.97);transition:transform .38s cubic-bezier(.175,.885,.32,1.2);position:relative;scrollbar-width:thin;scrollbar-color:rgba(123,21,37,.2) transparent;}
+.modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+.modal-box::-webkit-scrollbar{width:5px;}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(123,21,37,.18);border-radius:4px;}
+.modal-close{position:sticky;top:1rem;float:right;margin:1rem 1rem 0 0;width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(0,0,0,.12);background:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .25s;color:var(--muted);line-height:1;}
+.modal-close:hover{background:var(--maroon);color:#fff;border-color:var(--maroon);transform:rotate(90deg);}
+.modal-header{padding:2rem 2rem 1.5rem;}
+.modal-header-top{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:1.4rem;}
+.modal-logo{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0;border:1.5px solid rgba(0,0,0,.07);}
+.modal-logo-round{border-radius:50%;}
+.modal-title-group{}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;line-height:1.2;margin-bottom:4px;}
+.modal-subtitle{font-size:13px;color:var(--muted);}
+.modal-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:.8rem;}
+.modal-tag{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;}
+.modal-tag-maroon{background:rgba(123,21,37,.08);color:var(--maroon);}
+.modal-tag-gold{background:rgba(201,168,76,.12);color:#7a5e10;}
+.modal-tag-green{background:#e8f5e9;color:#2e7d32;}
+.modal-tag-blue{background:#e8f0fe;color:#1a73e8;}
+.modal-tag-orange{background:#fff3e0;color:#b06000;}
+.modal-divider{height:1px;background:rgba(0,0,0,.07);margin:0 2rem;}
+.modal-body{padding:1.8rem 2rem;}
+.modal-section{margin-bottom:1.8rem;}
+.modal-section-title{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.8rem;font-weight:500;}
+.modal-section-text{font-size:14px;color:var(--ink);line-height:1.8;}
+.modal-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:540px){.modal-grid-2{grid-template-columns:1fr;}}
+.modal-info-card{background:var(--cream);border-radius:10px;padding:1rem 1.2rem;border:1px solid rgba(0,0,0,.06);}
+.modal-info-card-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
+.modal-info-card-value{font-size:14px;font-weight:500;color:var(--ink);}
+.modal-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.modal-list li{font-size:13px;color:var(--ink);padding-left:18px;position:relative;line-height:1.6;}
+.modal-list li::before{content:'→';position:absolute;left:0;color:var(--maroon);font-size:11px;top:2px;}
+.modal-cta-row{display:flex;gap:10px;flex-wrap:wrap;padding:1.5rem 2rem;border-top:1px solid rgba(0,0,0,.07);background:rgba(253,248,241,.6);}
+.modal-btn-primary{background:linear-gradient(135deg,var(--maroon),var(--maroon-light));color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:12px 28px;border-radius:9px;cursor:pointer;transition:all .3s;}
+.modal-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(123,21,37,.35);}
+.modal-btn-outline{background:transparent;color:var(--maroon);border:1.5px solid rgba(123,21,37,.25);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 24px;border-radius:9px;cursor:pointer;transition:all .3s;}
+.modal-btn-outline:hover{border-color:var(--maroon);background:rgba(123,21,37,.04);}
+.modal-avatar-big{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;border:3px solid rgba(201,168,76,.3);}
+.modal-news-hero{width:100%;height:200px;background:linear-gradient(135deg,var(--maroon),#8a3040);display:flex;align-items:center;justify-content:center;font-size:60px;border-radius:20px 20px 0 0;position:relative;overflow:hidden;}
+.modal-news-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent);}
+.modal-stat-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.8rem;}
+.modal-stat{flex:1;min-width:100px;background:var(--cream);border-radius:10px;padding:.9rem 1rem;text-align:center;border:1px solid rgba(0,0,0,.05);}
+.modal-stat-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--maroon);}
+.modal-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.modal-event-banner{background:linear-gradient(135deg,var(--maroon),var(--maroon-light));padding:2rem;border-radius:20px 20px 0 0;color:#fff;text-align:center;}
+.modal-event-date-big{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:600;line-height:1;color:var(--gold-light);}
+.modal-event-month{font-size:14px;letter-spacing:3px;text-transform:uppercase;opacity:.8;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <img class="preloader-seal" src="data:image/png;base64,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" alt="PUP Seal">
+  <div class="preloader-bar"><div class="preloader-fill" id="preloader-fill"></div></div>
+  <div class="preloader-text">Loading Alumni Connect</div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#">
+    <img src="data:image/png;base64,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" alt="PUP Logo">
+    <div class="nav-brand">
+      <span class="nav-brand-name">Alumni <span style="color:var(--gold)">Connect</span></span>
+      <span class="nav-brand-sub">Polytechnic University</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showSection('home',this)">Home</button>
+    <button class="nav-link" onclick="showSection('directory',this)">Directory</button>
+    <button class="nav-link" onclick="showSection('events',this)">Events</button>
+    <button class="nav-link" onclick="showSection('jobs',this)">Jobs</button>
+    <button class="nav-link" onclick="showSection('news',this)">News</button>
+    <button class="nav-link" onclick="showSection('achievements',this)">Hall of Fame</button>
+    <button class="nav-link" onclick="showSection('alumni-id',this)">Alumni ID</button>
+  </div>
+  <button class="nav-cta">Sign In</button>
+  <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="nav-link" onclick="showSection('home',null);toggleMobile()">Home</button>
+  <button class="nav-link" onclick="showSection('directory',null);toggleMobile()">Directory</button>
+  <button class="nav-link" onclick="showSection('events',null);toggleMobile()">Events</button>
+  <button class="nav-link" onclick="showSection('jobs',null);toggleMobile()">Jobs</button>
+  <button class="nav-link" onclick="showSection('news',null);toggleMobile()">News</button>
+  <button class="nav-link" onclick="showSection('achievements',null);toggleMobile()">Hall of Fame</button>
+  <button class="nav-link" onclick="showSection('alumni-id',null);toggleMobile()">Alumni ID</button>
+</div>
+
+<!-- ═══ HOME ═══ -->
+<div class="section active" id="sec-home">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-particles" id="particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">Official PUP Alumni Network</div>
+      <h1 id="hero-title">
+        <span class="line"><span class="word">Welcome </span><span class="word">Home,</span></span>
+        <span class="line"><em class="word">Iskolar </em><span class="word">ng </span><span class="word">Bayan</span></span>
+      </h1>
+      <p class="hero-sub" id="hero-sub">Reconnect with your batchmates, discover career opportunities, and give back to the next generation of PUP graduates.</p>
+      <div class="hero-btns" id="hero-btns">
+        <button class="btn-primary" onclick="showSection('directory',document.querySelectorAll('.nav-link')[1])">Explore Directory</button>
+        <button class="btn-outline" onclick="showSection('alumni-id',document.querySelectorAll('.nav-link')[6])">Request Alumni ID</button>
+      </div>
+    </div>
+    <div class="hero-scroll" id="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="0">
+        <span class="stat-num" data-count="120000" data-suffix="K+">0</span>
+        <span class="stat-lbl">Registered Alumni</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="80">
+        <span class="stat-num" data-count="85" data-suffix="+">0</span>
+        <span class="stat-lbl">Countries</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="160">
+        <span class="stat-num" data-count="40" data-suffix="+">0</span>
+        <span class="stat-lbl">Campus Chapters</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="240">
+        <span class="stat-num" data-count="2400" data-suffix="+">0</span>
+        <span class="stat-lbl">Jobs Posted</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <span class="section-eyebrow" data-aos="fade-up">Platform Features</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">What you can do here</h2>
+    <div class="divider" data-aos="fade-up" data-aos-delay="100"></div>
+    <div class="cards-grid">
+      <div class="card" data-aos="fade-up" data-aos-delay="0" onclick="showSection('directory',document.querySelectorAll('.nav-link')[1])">
+        <div class="card-icon">👥</div>
+        <div class="card-arrow">→</div>
+        <h3>Alumni Directory</h3>
+        <p>Find and connect with fellow Iskolar ng Bayan across all batches and campuses.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="60" onclick="showSection('jobs',document.querySelectorAll('.nav-link')[3])">
+        <div class="card-icon">💼</div>
+        <div class="card-arrow">→</div>
+        <h3>Career Center</h3>
+        <p>Browse alumni-posted jobs, internships, and mentorship opportunities.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="120" onclick="showSection('events',document.querySelectorAll('.nav-link')[2])">
+        <div class="card-icon">📅</div>
+        <div class="card-arrow">→</div>
+        <h3>Events & Reunions</h3>
+        <p>Join homecomings, webinars, and batch reunions near you or online.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="180" onclick="showSection('achievements',document.querySelectorAll('.nav-link')[5])">
+        <div class="card-icon">🏆</div>
+        <div class="card-arrow">→</div>
+        <h3>Hall of Fame</h3>
+        <p>Celebrate notable alumni making a difference in their industries.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="240" onclick="showSection('alumni-id',document.querySelectorAll('.nav-link')[6])">
+        <div class="card-icon">🪪</div>
+        <div class="card-arrow">→</div>
+        <h3>Alumni ID Request</h3>
+        <p>Virtually request your official PUP Alumni ID in just a few minutes.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-icon">🎓</div>
+        <div class="card-arrow">→</div>
+        <h3>Scholarship Fund</h3>
+        <p>Support the next generation of Iskolar ng Bayan through donations.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="360" onclick="showSection('news',document.querySelectorAll('.nav-link')[4])">
+        <div class="card-icon">📰</div>
+        <div class="card-arrow">→</div>
+        <h3>News & Updates</h3>
+        <p>Stay updated with PUP announcements and community news.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="420">
+        <div class="card-icon">🤝</div>
+        <div class="card-arrow">→</div>
+        <h3>Student Bridge</h3>
+        <p>Connect students with alumni for OJT, mentorship, and thesis guidance.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DIRECTORY ═══ -->
+<div class="section" id="sec-directory">
+  <div class="content" style="padding-top:7rem;">
+    <span class="section-eyebrow" data-aos="fade-up">Our Community</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">Alumni Directory</h2>
+    <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Search and connect with PUP graduates worldwide</p>
+    <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+    <div class="search-bar" data-aos="fade-up" data-aos-delay="140">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input class="search-input" type="text" placeholder="Search by name, company, or skill..." id="dir-search" oninput="filterAlumni()">
+      </div>
+      <select class="filter-select" id="dir-batch" onchange="filterAlumni()">
+        <option value="">All Batches</option>
+        <option>2024</option><option>2022</option><option>2020</option><option>2018</option><option>2015</option>
+      </select>
+      <select class="filter-select" id="dir-course" onchange="filterAlumni()">
+        <option value="">All Courses</option>
+        <option>BS IT</option><option>BS CS</option><option>BS Business Administration</option>
+        <option>BS Engineering</option><option>BS Education</option>
+      </select>
+    </div>
+    <div class="alumni-grid" id="alumni-grid"></div>
+  </div>
+</div>
+
+<!-- ═══ EVENTS ═══ -->
+<div class="section" id="sec-events">
+  <div class="content" style="padding-top:7rem;">
+    <span class="section-eyebrow" data-aos="fade-up">Gatherings</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">Events & Reunions</h2>
+    <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Upcoming alumni gatherings, webinars, and homecomings</p>
+    <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+    <div class="events-list">
+      <div class="event-card" data-aos="fade-up" data-aos-delay="0" onclick="openEventModal(0)" style="cursor:pointer;">
+        <div class="event-date"><div class="day">22</div><div class="month">Mar</div></div>
+        <div class="event-info"><h4>PUP Homecoming 2026 — Grand Alumni Reunion</h4><p>PUP Main Campus, Sta. Mesa, Manila — All batches welcome</p></div>
+        <span class="event-tag tag-onsite">On-site</span>
+        <button class="event-rsvp" onclick="event.stopPropagation();openEventModal(0)">RSVP Now</button>
+      </div>
+      <div class="event-card" data-aos="fade-up" data-aos-delay="60" onclick="openEventModal(1)" style="cursor:pointer;">
+        <div class="event-date"><div class="day">05</div><div class="month">Apr</div></div>
+        <div class="event-info"><h4>Career Talks: Tech Industry with PUP Alumni</h4><p>Zoom Webinar — Open to students and alumni</p></div>
+        <span class="event-tag tag-online">Online</span>
+        <button class="event-rsvp" onclick="event.stopPropagation();openEventModal(1)">RSVP Now</button>
+      </div>
+      <div class="event-card" data-aos="fade-up" data-aos-delay="120" onclick="openEventModal(2)" style="cursor:pointer;">
+        <div class="event-date"><div class="day">18</div><div class="month">Apr</div></div>
+        <div class="event-info"><h4>BS IT Batch 2015 — 10-Year Reunion Dinner</h4><p>Richmonde Hotel, Eastwood City, Quezon City</p></div>
+        <span class="event-tag tag-onsite">On-site</span>
+        <button class="event-rsvp" onclick="event.stopPropagation();openEventModal(2)">RSVP Now</button>
+      </div>
+      <div class="event-card" data-aos="fade-up" data-aos-delay="180" onclick="openEventModal(3)" style="cursor:pointer;">
+        <div class="event-date"><div class="day">03</div><div class="month">May</div></div>
+        <div class="event-info"><h4>Alumni Leadership Summit 2026</h4><p>Virtual — Open to all PUP Alumni chapter officers</p></div>
+        <span class="event-tag tag-online">Online</span>
+        <button class="event-rsvp" onclick="event.stopPropagation();openEventModal(3)">RSVP Now</button>
+      </div>
+      <div class="event-card" data-aos="fade-up" data-aos-delay="240" onclick="openEventModal(4)" style="cursor:pointer;">
+        <div class="event-date"><div class="day">15</div><div class="month">May</div></div>
+        <div class="event-info"><h4>Scholarship Fund Gala Night</h4><p>Manila Hotel — Fundraising for student scholarships</p></div>
+        <span class="event-tag tag-onsite">On-site</span>
+        <button class="event-rsvp" onclick="event.stopPropagation();openEventModal(4)">RSVP Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JOBS ═══ -->
+<div class="section" id="sec-jobs">
+  <div class="content" style="padding-top:7rem;">
+    <span class="section-eyebrow" data-aos="fade-up">Opportunities</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">Career Center</h2>
+    <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Jobs and opportunities posted by PUP alumni for PUP graduates</p>
+    <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+    <div class="search-bar" data-aos="fade-up" data-aos-delay="140">
+      <div class="search-input-wrap" style="flex:2">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input class="search-input" type="text" placeholder="Search job titles, skills, or companies...">
+      </div>
+      <select class="filter-select"><option>All Industries</option><option>Technology</option><option>Finance</option><option>Education</option><option>Government</option></select>
+      <select class="filter-select"><option>All Types</option><option>Full-time</option><option>Part-time</option><option>Internship</option></select>
+    </div>
+    <div class="jobs-list">
+      <div class="job-card" data-aos="fade-up" data-aos-delay="0" onclick="openJobModal(0)" style="cursor:pointer;">
+        <div class="job-logo" style="background:#e8f0fe;color:#1a73e8;">G</div>
+        <div class="job-body"><div class="job-title">Software Engineer II</div><div class="job-meta">Google Philippines — Taguig City</div><div class="job-tags"><span class="job-tag">Full-time</span><span class="job-tag">PHP 120k–180k/mo</span><span class="job-tag">BS CS / IT</span></div></div>
+        <button class="apply-btn" onclick="event.stopPropagation();openJobModal(0)">View & Apply</button>
+      </div>
+      <div class="job-card" data-aos="fade-up" data-aos-delay="60" onclick="openJobModal(1)" style="cursor:pointer;">
+        <div class="job-logo" style="background:#fff3e0;color:#e65100;">B</div>
+        <div class="job-body"><div class="job-title">Finance Analyst</div><div class="job-meta">BDO Unibank — Makati City</div><div class="job-tags"><span class="job-tag">Full-time</span><span class="job-tag">PHP 45k–65k/mo</span><span class="job-tag">BS Accountancy</span></div></div>
+        <button class="apply-btn" onclick="event.stopPropagation();openJobModal(1)">View & Apply</button>
+      </div>
+      <div class="job-card" data-aos="fade-up" data-aos-delay="120" onclick="openJobModal(2)" style="cursor:pointer;">
+        <div class="job-logo" style="background:#e8f5e9;color:#2e7d32;">D</div>
+        <div class="job-body"><div class="job-title">UI/UX Designer</div><div class="job-meta">Disruptive Technologies Inc. — Remote</div><div class="job-tags"><span class="job-tag">Remote</span><span class="job-tag">PHP 60k–90k/mo</span><span class="job-tag">Any Course</span></div></div>
+        <button class="apply-btn" onclick="event.stopPropagation();openJobModal(2)">View & Apply</button>
+      </div>
+      <div class="job-card" data-aos="fade-up" data-aos-delay="180" onclick="openJobModal(3)" style="cursor:pointer;">
+        <div class="job-logo" style="background:#fce4ec;color:#880e4f;">D</div>
+        <div class="job-body"><div class="job-title">DepEd Teacher — ICT</div><div class="job-meta">Department of Education — Nationwide</div><div class="job-tags"><span class="job-tag">Government</span><span class="job-tag">Plantilla</span><span class="job-tag">BS Education</span></div></div>
+        <button class="apply-btn" onclick="event.stopPropagation();openJobModal(3)">View & Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NEWS ═══ -->
+<div class="section" id="sec-news">
+  <div class="content" style="padding-top:7rem;">
+    <span class="section-eyebrow" data-aos="fade-up">Latest</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">News & Updates</h2>
+    <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Stay updated with PUP and the alumni community</p>
+    <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+    <div class="news-grid">
+      <div class="news-card" data-aos="fade-up" data-aos-delay="0" onclick="openNewsModal(0)" style="cursor:pointer;"><div class="news-img">🎓<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Institutional</div><div class="news-title">PUP opens new Engineering and Architecture Building in Sta. Mesa</div><div class="news-date">March 10, 2026</div></div></div>
+      <div class="news-card" data-aos="fade-up" data-aos-delay="60" onclick="openNewsModal(1)" style="cursor:pointer;"><div class="news-img">🏅<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Achievement</div><div class="news-title">PUP alumna tops the 2025 CPA Board Examination nationwide</div><div class="news-date">March 5, 2026</div></div></div>
+      <div class="news-card" data-aos="fade-up" data-aos-delay="120" onclick="openNewsModal(2)" style="cursor:pointer;"><div class="news-img">💡<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Community</div><div class="news-title">Alumni Scholarship Fund surpasses PHP 5 million milestone</div><div class="news-date">February 28, 2026</div></div></div>
+      <div class="news-card" data-aos="fade-up" data-aos-delay="180" onclick="openNewsModal(3)" style="cursor:pointer;"><div class="news-img">🤝<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Partnership</div><div class="news-title">PUP Alumni signs MOU with 12 tech companies for OJT placements</div><div class="news-date">February 20, 2026</div></div></div>
+      <div class="news-card" data-aos="fade-up" data-aos-delay="240" onclick="openNewsModal(4)" style="cursor:pointer;"><div class="news-img">🌏<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Global</div><div class="news-title">Alumni chapters now active in Japan, Canada, UAE, and Australia</div><div class="news-date">February 14, 2026</div></div></div>
+      <div class="news-card" data-aos="fade-up" data-aos-delay="300" onclick="openNewsModal(5)" style="cursor:pointer;"><div class="news-img">📜<div class="news-img-overlay"></div></div><div class="news-body"><div class="news-category">Policy</div><div class="news-title">New Alumni ID policy: digital and physical IDs now available for all graduates</div><div class="news-date">January 30, 2026</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HALL OF FAME ═══ -->
+<div class="section" id="sec-achievements">
+  <div class="content" style="padding-top:7rem;">
+    <span class="section-eyebrow" data-aos="fade-up">Recognition</span>
+    <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">Hall of Fame</h2>
+    <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Celebrating PUP Iskolar ng Bayan who have made their mark</p>
+    <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+    <div class="achieve-grid">
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="0"><div class="achieve-avatar" style="background:#fce4ec;color:#880e4f;">AR</div><div><div class="achieve-name">Atty. Ana Reyes</div><div class="achieve-role">Associate Justice, Court of Appeals · Batch 2000</div><span class="achieve-badge">Public Service</span></div></div>
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="60"><div class="achieve-avatar" style="background:#e3f2fd;color:#0d47a1;">MC</div><div><div class="achieve-name">Mark Cruz</div><div class="achieve-role">CTO, Paymongo Inc. · Batch 2008</div><span class="achieve-badge">Technology</span></div></div>
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="120"><div class="achieve-avatar" style="background:#e8f5e9;color:#1b5e20;">LB</div><div><div class="achieve-name">Liza Bautista</div><div class="achieve-role">CEO, GreenPH Solutions · Batch 2005</div><span class="achieve-badge">Entrepreneurship</span></div></div>
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="180"><div class="achieve-avatar" style="background:#fff3e0;color:#e65100;">RD</div><div><div class="achieve-name">Rep. Ramon Dela Cruz</div><div class="achieve-role">Congressman, 3rd District Cavite · Batch 1998</div><span class="achieve-badge">Government</span></div></div>
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="240"><div class="achieve-avatar" style="background:#f3e5f5;color:#4a148c;">JP</div><div><div class="achieve-name">Dr. Jose Padilla</div><div class="achieve-role">Research Director, DOST · Batch 2002</div><span class="achieve-badge">Science & Research</span></div></div>
+      <div class="achieve-card" data-aos="fade-up" data-aos-delay="300"><div class="achieve-avatar" style="background:#e0f2f1;color:#004d40;">SM</div><div><div class="achieve-name">Sarah Mendez</div><div class="achieve-role">Bar Exam Topnotcher, 2025 · Batch 2020</div><span class="achieve-badge">Law</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ALUMNI ID ═══ -->
+<div class="section" id="sec-alumni-id">
+  <div class="id-section-bg">
+    <div class="content" style="padding-top:7rem;">
+      <span class="section-eyebrow" data-aos="fade-up">Official Document</span>
+      <h2 class="section-title" data-aos="fade-up" data-aos-delay="60">Alumni ID Request</h2>
+      <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Virtually request your official PUP Alumni ID — fully online</p>
+      <div class="divider" data-aos="fade-up" data-aos-delay="120"></div>
+      <div class="id-form-wrapper">
+        <div data-aos="fade-right" data-aos-delay="100">
+          <div class="id-card-preview" id="id-preview">
+            <div class="id-card-shine"></div>
+            <div class="id-card-logo">
+              <img src="data:image/png;base64,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" alt="PUP Seal">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#fff;line-height:1.2;">Polytechnic University</div>
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;">of the Philippines</div>
+              </div>
+            </div>
+            <div class="id-card-label">Alumni Identification Card</div>
+            <div class="id-card-name" id="preview-name">Juan Dela Cruz</div>
+            <div class="id-card-course" id="preview-course">Bachelor of Science in Information Technology</div>
+            <div class="id-card-batch" id="preview-batch">Batch 2018 · PUP Main Campus</div>
+            <div class="id-card-footer">
+              <div class="id-card-number">PUP-AL-2026-XXXXX</div>
+              <div class="id-card-valid">Valid Until<br>Dec 2027</div>
+            </div>
+          </div>
+          <div class="id-info-box">
+            <div>Processing Information</div>
+            <ul>
+              <li>Processing time: 10–15 business days</li>
+              <li>ID will be mailed to your address on file</li>
+              <li>Digital copy sent to your email within 3 days</li>
+              <li>Bring valid ID for on-site pickup option</li>
+            </ul>
+          </div>
+        </div>
+        <div data-aos="fade-left" data-aos-delay="160">
+          <div class="form-panel">
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" type="text" placeholder="Juan" id="f-fname" oninput="updatePreview()"></div>
+              <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" type="text" placeholder="Dela Cruz" id="f-lname" oninput="updatePreview()"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Middle Name</label><input class="form-input" type="text" placeholder="Santos"></div>
+            <div class="form-group"><label class="form-label">Student Number *</label><input class="form-input" type="text" placeholder="e.g. 2018-XXXXX-MN-0"></div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Course / Program *</label>
+                <select class="form-select" id="f-course" onchange="updatePreview()">
+                  <option value="">Select course</option>
+                  <option value="Bachelor of Science in Information Technology">BS Information Technology</option>
+                  <option value="Bachelor of Science in Computer Science">BS Computer Science</option>
+                  <option value="Bachelor of Science in Business Administration">BS Business Administration</option>
+                  <option value="Bachelor of Science in Accountancy">BS Accountancy</option>
+                  <option value="Bachelor of Science in Engineering">BS Engineering</option>
+                  <option value="Bachelor of Science in Education">BS Education</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year Graduated *</label>
+                <select class="form-select" id="f-batch" onchange="updatePreview()">
+                  <option value="">Select year</option>
+                  <option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+                  <option>2020</option><option>2019</option><option>2018</option><option>2017</option>
+                  <option>2016</option><option>2015</option><option>2010</option><option>2005</option><option>2000</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Campus *</label>
+              <select class="form-select">
+                <option>PUP Main Campus, Sta. Mesa</option>
+                <option>PUP Taguig Branch</option>
+                <option>PUP Quezon City Branch</option>
+                <option>PUP San Juan Branch</option>
+                <option>PUP Biñan Branch</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Active Email Address *</label><input class="form-input" type="email" placeholder="juandelacruz@email.com"></div>
+            <div class="form-group"><label class="form-label">Mobile Number *</label><input class="form-input" type="tel" placeholder="09XX-XXX-XXXX"></div>
+            <div class="form-group"><label class="form-label">Current Mailing Address *</label><textarea class="form-textarea" placeholder="House/Unit No., Street, Barangay, City, Province, ZIP Code"></textarea></div>
+            <div class="form-group"><label class="form-label">Upload 2x2 Photo (white background) *</label><input class="form-input" type="file" accept="image/*" style="padding:9px 12px;"></div>
+            <div class="form-group"><label class="form-label">Upload Valid Government ID *</label><input class="form-input" type="file" accept="image/*,application/pdf" style="padding:9px 12px;"></div>
+            <button class="form-submit" onclick="submitIDForm()">Submit Alumni ID Request</button>
+            <div class="form-note">By submitting, you confirm that all provided information is accurate and authentic.</div>
+            <div class="success-box" id="success-msg">
+              <div style="font-size:40px;margin-bottom:10px;">✅</div>
+              <div style="font-size:17px;font-weight:500;color:#2e7d32;margin-bottom:6px;">Request submitted successfully!</div>
+              <div style="font-size:13px;color:#4caf50;line-height:1.7;">Check your email for a confirmation and tracking number.<br>Your Alumni ID will be processed within 10–15 business days.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: JOB DETAIL
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-job" onclick="closeModalOnBg(event,'modal-job')">
+  <div class="modal-box" id="modal-job-box">
+    <button class="modal-close" onclick="closeModal('modal-job')">✕</button>
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-logo" id="mj-logo" style="background:#e8f0fe;color:#1a73e8;font-size:22px;">G</div>
+        <div class="modal-title-group">
+          <div class="modal-title" id="mj-title">Software Engineer II</div>
+          <div class="modal-subtitle" id="mj-company">Google Philippines — Taguig City</div>
+          <div class="modal-tags" id="mj-tags"></div>
+        </div>
+      </div>
+      <div class="modal-stat-row" id="mj-stats"></div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">About the Role</div>
+        <div class="modal-section-text" id="mj-about"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Key Responsibilities</div>
+        <ul class="modal-list" id="mj-responsibilities"></ul>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Requirements</div>
+        <ul class="modal-list" id="mj-requirements"></ul>
+      </div>
+      <div class="modal-section">
+        <div class="modal-grid-2">
+          <div class="modal-info-card"><div class="modal-info-card-label">Posted by Alumni</div><div class="modal-info-card-value" id="mj-posted-by"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Application Deadline</div><div class="modal-info-card-value" id="mj-deadline"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Work Setup</div><div class="modal-info-card-value" id="mj-setup"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Experience Level</div><div class="modal-info-card-value" id="mj-level"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-cta-row">
+      <button class="modal-btn-primary">Apply Now</button>
+      <button class="modal-btn-outline">Save Job</button>
+      <button class="modal-btn-outline" style="margin-left:auto;" onclick="closeModal('modal-job')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: EVENT DETAIL
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-event" onclick="closeModalOnBg(event,'modal-event')">
+  <div class="modal-box" id="modal-event-box">
+    <button class="modal-close" onclick="closeModal('modal-event')">✕</button>
+    <div class="modal-event-banner">
+      <div class="modal-event-date-big" id="me-day">22</div>
+      <div class="modal-event-month" id="me-monthyear">March 2026</div>
+    </div>
+    <div class="modal-header" style="padding-top:1.5rem;">
+      <div class="modal-title" id="me-title">Grand Alumni Reunion</div>
+      <div class="modal-subtitle" id="me-location" style="margin-top:4px;"></div>
+      <div class="modal-tags" id="me-tags" style="margin-top:.8rem;"></div>
+      <div class="modal-stat-row" id="me-stats" style="margin-top:1rem;"></div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">About This Event</div>
+        <div class="modal-section-text" id="me-about"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">What to Expect</div>
+        <ul class="modal-list" id="me-agenda"></ul>
+      </div>
+      <div class="modal-section">
+        <div class="modal-grid-2">
+          <div class="modal-info-card"><div class="modal-info-card-label">Time</div><div class="modal-info-card-value" id="me-time"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Dress Code</div><div class="modal-info-card-value" id="me-dress"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Fee</div><div class="modal-info-card-value" id="me-fee"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Organized by</div><div class="modal-info-card-value" id="me-org"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-cta-row">
+      <button class="modal-btn-primary">RSVP Now</button>
+      <button class="modal-btn-outline">Add to Calendar</button>
+      <button class="modal-btn-outline" style="margin-left:auto;" onclick="closeModal('modal-event')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: ALUMNI PROFILE
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-alumni" onclick="closeModalOnBg(event,'modal-alumni')">
+  <div class="modal-box" id="modal-alumni-box">
+    <button class="modal-close" onclick="closeModal('modal-alumni')">✕</button>
+    <div class="modal-header">
+      <div class="modal-header-top" style="align-items:center;">
+        <div class="modal-avatar-big" id="ma-avatar" style="background:#e3f2fd;color:#0d47a1;">MS</div>
+        <div class="modal-title-group">
+          <div class="modal-title" id="ma-name">Maria Santos</div>
+          <div class="modal-subtitle" id="ma-role"></div>
+          <div class="modal-tags" id="ma-tags" style="margin-top:.6rem;"></div>
+        </div>
+      </div>
+      <div class="modal-stat-row" id="ma-stats"></div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">About</div>
+        <div class="modal-section-text" id="ma-bio"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Work Experience</div>
+        <div id="ma-experience"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Skills & Expertise</div>
+        <div id="ma-skills" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-grid-2">
+          <div class="modal-info-card"><div class="modal-info-card-label">Hometown</div><div class="modal-info-card-value" id="ma-hometown"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Industry</div><div class="modal-info-card-value" id="ma-industry"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Open to Mentor</div><div class="modal-info-card-value" id="ma-mentor"></div></div>
+          <div class="modal-info-card"><div class="modal-info-card-label">Email</div><div class="modal-info-card-value" id="ma-email" style="word-break:break-all;"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-cta-row">
+      <button class="modal-btn-primary">Connect</button>
+      <button class="modal-btn-outline">Send Message</button>
+      <button class="modal-btn-outline" style="margin-left:auto;" onclick="closeModal('modal-alumni')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: NEWS ARTICLE
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-news" onclick="closeModalOnBg(event,'modal-news')">
+  <div class="modal-box" id="modal-news-box">
+    <button class="modal-close" onclick="closeModal('modal-news')">✕</button>
+    <div class="modal-news-hero" id="mn-hero">
+      🎓
+      <div class="modal-news-hero-overlay"></div>
+    </div>
+    <div class="modal-header" style="padding-top:1.5rem;">
+      <div style="font-size:10px;color:var(--maroon);text-transform:uppercase;letter-spacing:2px;font-weight:500;margin-bottom:6px;" id="mn-category">Institutional</div>
+      <div class="modal-title" id="mn-title" style="font-size:22px;line-height:1.3;"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;" id="mn-meta"></div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-text" id="mn-lead" style="font-size:15px;font-weight:500;color:var(--ink);line-height:1.7;margin-bottom:1.2rem;"></div>
+        <div class="modal-section-text" id="mn-body1" style="margin-bottom:1rem;"></div>
+        <div class="modal-section-text" id="mn-body2" style="margin-bottom:1rem;"></div>
+        <div class="modal-section-text" id="mn-body3"></div>
+      </div>
+      <div class="modal-section" id="mn-quote-wrap" style="background:rgba(123,21,37,.04);border-left:3px solid var(--maroon);padding:1rem 1.2rem;border-radius:0 8px 8px 0;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ink);line-height:1.6;" id="mn-quote"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;" id="mn-quote-attr"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Key Highlights</div>
+        <ul class="modal-list" id="mn-highlights"></ul>
+      </div>
+    </div>
+    <div class="modal-cta-row">
+      <button class="modal-btn-primary">Share Article</button>
+      <button class="modal-btn-outline" onclick="closeModal('modal-news')">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <span>PUP Alumni Connect</span> · Polytechnic University of the Philippines · All rights reserved</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" onerror="console.warn('GSAP failed to load - animations disabled')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" onerror="console.warn('ScrollTrigger failed')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" onerror="console.warn('AOS failed to load')"></script>
+
+<script>
+// ── CUSTOM CURSOR ────────────────────────────────────
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('button,a,.card,.alumni-card,.event-card,.job-card,.news-card,.achieve-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='6px';cursor.style.height='6px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
+});
+// hide on mobile
+if('ontouchstart' in window){cursor.style.display='none';ring.style.display='none';}
+
+// ── PRELOADER ────────────────────────────────────────
+const fill=document.getElementById('preloader-fill');
+let prog=0;
+function dismissPreloader(){
+  const pl=document.getElementById('preloader');
+  if(!pl||pl.style.display==='none')return;
+  pl.style.transition='opacity .7s, transform .7s';
+  pl.style.opacity='0';
+  pl.style.transform='scale(1.04)';
+  setTimeout(()=>{pl.style.display='none';initHeroAnim();},700);
+}
+const interval=setInterval(()=>{
+  prog+=Math.random()*18+6;
+  if(prog>=100){prog=100;clearInterval(interval);fill.style.width='100%';setTimeout(dismissPreloader,300);}
+  else{fill.style.width=Math.min(prog,100)+'%';}
+},120);
+// Hard safety net: always dismiss after 4 seconds no matter what
+setTimeout(dismissPreloader, 4000);
+
+// ── HERO GSAP ANIMATION ──────────────────────────────
+function showAllHeroElements(){
+  ['#hero-badge','#hero-sub','#hero-btns','#hero-scroll'].forEach(sel=>{
+    const el=document.querySelector(sel);
+    if(el){el.style.opacity='1';el.style.transform='none';}
+  });
+  const words=document.querySelectorAll('#hero-title .word');
+  words.forEach(w=>{w.style.opacity='1';w.style.transform='none';});
+  document.querySelector('#hero-title').style.opacity='1';
+}
+function initHeroAnim(){
+  if(typeof gsap!=='undefined'){
+    const tl=gsap.timeline({defaults:{ease:'power4.out'}});
+    tl.to('#hero-badge',{opacity:1,y:0,duration:.8,delay:.1})
+      .to('#hero-title',{opacity:1,duration:.1},'-=.4')
+      .from('#hero-title .word',{y:80,opacity:0,duration:.9,stagger:.08,ease:'power4.out'},'-=.1')
+      .to('#hero-sub',{opacity:1,y:0,duration:.8},'-=.4')
+      .to('#hero-btns',{opacity:1,y:0,duration:.8},'-=.5')
+      .to('#hero-scroll',{opacity:1,duration:.6},'-=.2');
+  } else {
+    showAllHeroElements();
+  }
+  if(typeof AOS!=='undefined'){AOS.init({duration:700,easing:'ease-out-cubic',once:true,offset:60});}
+  initCounters();
+}
+
+// ── PARTICLES ────────────────────────────────────────
+const pContainer=document.getElementById('particles');
+for(let i=0;i<22;i++){
+  const s=document.createElement('span');
+  s.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*8}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;opacity:${.3+Math.random()*.5}`;
+  pContainer.appendChild(s);
+}
+
+// ── NAV SCROLL ───────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  document.getElementById('main-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+
+// ── MOBILE MENU ──────────────────────────────────────
+function toggleMobile(){
+  const m=document.getElementById('mobile-menu');
+  const h=document.getElementById('hamburger');
+  const open=m.classList.toggle('open');
+  const spans=h.querySelectorAll('span');
+  if(open){spans[0].style.transform='rotate(45deg) translate(5px,5px)';spans[1].style.opacity='0';spans[2].style.transform='rotate(-45deg) translate(5px,-5px)';}
+  else{spans[0].style.transform='';spans[1].style.opacity='1';spans[2].style.transform='';}
+}
+
+// ── SECTION TRANSITIONS ──────────────────────────────
+function showSection(id,el){
+  const current=document.querySelector('.section.active');
+  const next=document.getElementById('sec-'+id);
+  if(current===next)return;
+  current.style.opacity='0';current.style.transform='translateY(-16px)';
+  current.style.transition='opacity .3s,transform .3s';
+  setTimeout(()=>{
+    current.classList.remove('active');current.style.opacity='';current.style.transform='';current.style.transition='';
+    next.classList.add('active');
+    next.style.opacity='0';next.style.transform='translateY(16px)';
+    requestAnimationFrame(()=>{
+      next.style.transition='opacity .4s,transform .4s';
+      next.style.opacity='1';next.style.transform='translateY(0)';
+      setTimeout(()=>{next.style.transition='';if(typeof AOS!=="undefined"){AOS.refresh();}},400);
+    });
+  },280);
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(el)el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── COUNTER ANIMATION ─────────────────────────────────
+function initCounters(){
+  const els=document.querySelectorAll('.stat-num[data-count]');
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting)return;
+      const el=entry.target;
+      const target=+el.dataset.count;
+      const suffix=el.dataset.suffix||'';
+      const duration=2000;
+      const start=performance.now();
+      function update(now){
+        const elapsed=now-start;
+        const progress=Math.min(elapsed/duration,1);
+        const eased=1-Math.pow(1-progress,4);
+        let val=Math.floor(eased*target);
+        if(target>=1000){val=target>=10000?(val/1000).toFixed(0)+'K':val;}
+        el.textContent=val+suffix;
+        if(progress<1)requestAnimationFrame(update);
+        else el.textContent=(target>=10000?(target/1000).toFixed(0)+'K':target)+suffix;
+      }
+      requestAnimationFrame(update);
+      observer.unobserve(el);
+    });
+  },{threshold:.5});
+  els.forEach(el=>observer.observe(el));
+}
+
+// ── ALUMNI DIRECTORY ─────────────────────────────────
+const alumniData=[
+  {name:'Maria Santos',course:'BS IT',batch:'2022',company:'Globe Telecom',color:'#e3f2fd',tc:'#0d47a1'},
+  {name:'Juan Reyes',course:'BS CS',batch:'2020',company:'Accenture PH',color:'#fce4ec',tc:'#880e4f'},
+  {name:'Ana Cruz',course:'BS Business Administration',batch:'2018',company:'Jollibee Foods Corp',color:'#e8f5e9',tc:'#1b5e20'},
+  {name:'Carlo Bautista',course:'BS Engineering',batch:'2015',company:'DMCI Holdings',color:'#fff3e0',tc:'#e65100'},
+  {name:'Lea Garcia',course:'BS Education',batch:'2024',company:'DepEd Manila',color:'#f3e5f5',tc:'#4a148c'},
+  {name:'Ryan Torres',course:'BS IT',batch:'2019',company:'Sitel Group',color:'#e0f7fa',tc:'#006064'},
+  {name:'Nina Flores',course:'BS Accountancy',batch:'2022',company:'SGV & Co.',color:'#fff8e1',tc:'#f57f17'},
+  {name:'Marco Diaz',course:'BS CS',batch:'2017',company:'Uber Philippines',color:'#fbe9e7',tc:'#bf360c'},
+];
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function renderAlumni(data){
+  const g=document.getElementById('alumni-grid');
+  g.innerHTML=data.map((a,i)=>{
+    const safeName=a.name.replace(/"/g,'&quot;');
+    return `<div class="alumni-card" data-aos="fade-up" data-aos-delay="${i*50}" data-alumni-name="${safeName}" style="cursor:pointer;">
+    <div class="alumni-avatar" style="background:${a.color};color:${a.tc};">${initials(a.name)}</div>
+    <div class="alumni-name">${a.name}</div>
+    <div class="alumni-course">${a.course}</div>
+    <div class="alumni-batch">Batch ${a.batch}</div>
+    <div class="alumni-company">${a.company}</div>
+  </div>`;
+  }).join('');
+  g.querySelectorAll('.alumni-card').forEach(card=>{
+    card.addEventListener('click',()=>openAlumniModal(card.dataset.alumniName));
+  });
+  if(typeof AOS!=="undefined"){AOS.refresh();}
+}
+function filterAlumni(){
+  const q=document.getElementById('dir-search').value.toLowerCase();
+  const b=document.getElementById('dir-batch').value;
+  const c=document.getElementById('dir-course').value;
+  renderAlumni(alumniData.filter(a=>{
+    return (!q||a.name.toLowerCase().includes(q)||a.company.toLowerCase().includes(q)||a.course.toLowerCase().includes(q))&&(!b||a.batch===b)&&(!c||a.course===c);
+  }));
+}
+renderAlumni(alumniData);
+
+// ── ID FORM PREVIEW ───────────────────────────────────
+function updatePreview(){
+  const fn=document.getElementById('f-fname').value||'Juan';
+  const ln=document.getElementById('f-lname').value||'Dela Cruz';
+  const course=document.getElementById('f-course').value||'Bachelor of Science in Information Technology';
+  const batch=document.getElementById('f-batch').value||'2018';
+  const nameEl=document.getElementById('preview-name');
+  const newName=fn+' '+ln;
+  if(nameEl.textContent!==newName){nameEl.style.transform='translateY(-4px)';nameEl.style.opacity='0';setTimeout(()=>{nameEl.textContent=newName;nameEl.style.transition='all .3s';nameEl.style.transform='translateY(0)';nameEl.style.opacity='1';},150);}
+  document.getElementById('preview-course').textContent=course;
+  document.getElementById('preview-batch').textContent='Batch '+batch+' · PUP Main Campus';
+}
+
+function submitIDForm(){
+  const btn=document.querySelector('.form-submit');
+  btn.textContent='Submitting...';btn.style.opacity='.7';
+  setTimeout(()=>{
+    document.getElementById('success-msg').classList.add('show');
+    btn.style.display='none';
+    document.getElementById('success-msg').scrollIntoView({behavior:'smooth',block:'center'});
+  },1200);
+}
+
+
+// ════════════════════════════════════════════════════
+//  DUMMY DATA & MODAL CONTROLLERS
+// ════════════════════════════════════════════════════
+
+// ── JOBS DATA ─────────────────────────────────────────
+const jobsData = [
+  {
+    id:0, logo:'G', logoBg:'#e8f0fe', logoColor:'#1a73e8',
+    title:'Software Engineer II',
+    company:'Google Philippines',
+    location:'Google BGC Office, Taguig City',
+    type:'Full-time', salary:'PHP 120,000 – 180,000/mo',
+    course:'BS Computer Science / Information Technology',
+    about:`Google Philippines is looking for a talented Software Engineer II to join our growing engineering team in BGC. You will design, develop, test, and maintain high-quality software systems that serve millions of Filipino users across Search, Maps, and Google Workspace products. This is a rare opportunity to work on globally impactful technology right here in the Philippines, with the full support of Google's world-class resources and culture.`,
+    responsibilities:[
+      'Design and implement scalable, well-tested backend and full-stack features for Google\'s core products',
+      'Collaborate with cross-functional teams including Product Managers, UX designers, and SRE engineers',
+      'Participate in code reviews to maintain code quality and share knowledge across the team',
+      'Analyze and improve the efficiency, scalability, stability and security of applications',
+      'Mentor junior engineers and contribute to team documentation and best practices'
+    ],
+    requirements:[
+      'Bachelor\'s degree in Computer Science, Engineering, or a related technical field',
+      '3+ years of professional software development experience',
+      'Proficiency in one or more of: Java, Python, Go, or C++',
+      'Experience with distributed systems, microservices, or cloud infrastructure',
+      'Strong problem-solving skills and excellent communication in English'
+    ],
+    postedBy:'Karl Reyes (BS CS, Batch 2012)',
+    deadline:'April 30, 2026',
+    setup:'Hybrid — 3 days onsite, 2 days WFH',
+    level:'Mid-level (3–5 years)',
+    tags:[{label:'Full-time',cls:'modal-tag-maroon'},{label:'PHP 120k–180k/mo',cls:'modal-tag-gold'},{label:'BS CS / IT',cls:'modal-tag-blue'},{label:'Hybrid',cls:'modal-tag-green'}],
+    stats:[{num:'120+',lbl:'Applied'},{num:'5',lbl:'Openings'},{num:'April 30',lbl:'Deadline'},{num:'3–5 yrs',lbl:'Experience'}]
+  },
+  {
+    id:1, logo:'B', logoBg:'#fff3e0', logoColor:'#e65100',
+    title:'Finance Analyst',
+    company:'BDO Unibank, Inc.',
+    location:'BDO Head Office, Makati City',
+    type:'Full-time', salary:'PHP 45,000 – 65,000/mo',
+    course:'BS Accountancy / Financial Management',
+    about:`BDO Unibank, the Philippines' largest bank by assets, is seeking a Finance Analyst to join our Corporate Finance team in Makati. You will play a key role in financial planning, analysis, and reporting activities that support executive decision-making and business strategy. This role offers exposure to a wide range of financial instruments and enterprise-level reporting tools used across one of Southeast Asia's leading financial institutions.`,
+    responsibilities:[
+      'Prepare monthly, quarterly, and annual financial reports and variance analyses',
+      'Develop and maintain financial models to support business unit planning',
+      'Monitor key performance indicators and flag financial risks to senior management',
+      'Coordinate with internal audit and external auditors during review periods',
+      'Support the budget consolidation process and multi-year financial forecasting'
+    ],
+    requirements:[
+      'CPA licensure is an advantage but not required',
+      'Bachelor\'s degree in Accountancy, Finance, or related field',
+      '2+ years experience in financial analysis or corporate finance',
+      'Advanced proficiency in Microsoft Excel and financial modeling',
+      'Familiarity with SAP or Oracle ERP systems is a plus'
+    ],
+    postedBy:'Diana Panganiban (BS Accountancy, Batch 2009)',
+    deadline:'April 15, 2026',
+    setup:'Onsite — Monday to Friday, 8AM–5PM',
+    level:'Junior to Mid-level (2–4 years)',
+    tags:[{label:'Full-time',cls:'modal-tag-maroon'},{label:'PHP 45k–65k/mo',cls:'modal-tag-gold'},{label:'BS Accountancy',cls:'modal-tag-orange'},{label:'Onsite',cls:'modal-tag-maroon'}],
+    stats:[{num:'87',lbl:'Applied'},{num:'2',lbl:'Openings'},{num:'April 15',lbl:'Deadline'},{num:'2–4 yrs',lbl:'Experience'}]
+  },
+  {
+    id:2, logo:'D', logoBg:'#e8f5e9', logoColor:'#2e7d32',
+    title:'UI/UX Designer',
+    company:'Disruptive Technologies Inc.',
+    location:'Remote (Philippines-based)',
+    type:'Remote', salary:'PHP 60,000 – 90,000/mo',
+    course:'Any Course (with portfolio)',
+    about:`Disruptive Technologies Inc. is a Filipino startup building next-generation fintech and healthtech products for the Southeast Asian market. We're looking for a creative UI/UX Designer who is passionate about crafting intuitive, accessible, and delightful digital experiences. You will work directly with our product and engineering teams in a fully remote setup with flexible hours, shaping the visual and interaction design of products used by thousands of Filipinos daily.`,
+    responsibilities:[
+      'Create wireframes, prototypes, and high-fidelity mockups for web and mobile applications',
+      'Conduct user research, usability testing, and translate findings into design improvements',
+      'Collaborate with developers to ensure design integrity during implementation',
+      'Maintain and evolve the company\'s design system and component library',
+      'Present design concepts and rationale clearly to stakeholders and executives'
+    ],
+    requirements:[
+      'Strong portfolio showcasing web and mobile UX/UI projects',
+      'Proficiency in Figma (required), Adobe XD or Sketch (a plus)',
+      'Understanding of user-centered design principles and accessibility standards',
+      'Ability to work independently in a fully remote, asynchronous environment',
+      'Experience working with Agile or Scrum teams is preferred'
+    ],
+    postedBy:'Miguel Soriano (BS IT, Batch 2016)',
+    deadline:'May 10, 2026',
+    setup:'Fully Remote — flexible hours (core 10AM–3PM)',
+    level:'Mid-level (2–5 years)',
+    tags:[{label:'Remote',cls:'modal-tag-green'},{label:'PHP 60k–90k/mo',cls:'modal-tag-gold'},{label:'Any Course',cls:'modal-tag-blue'},{label:'Flexible Hours',cls:'modal-tag-green'}],
+    stats:[{num:'214',lbl:'Applied'},{num:'1',lbl:'Opening'},{num:'May 10',lbl:'Deadline'},{num:'2–5 yrs',lbl:'Experience'}]
+  },
+  {
+    id:3, logo:'D', logoBg:'#fce4ec', logoColor:'#880e4f',
+    title:'DepEd Teacher — ICT',
+    company:'Department of Education (DepEd)',
+    location:'Nationwide Deployment (Various Schools)',
+    type:'Government / Plantilla', salary:'Salary Grade 11–13 (PHP 25,439 – 33,165/mo)',
+    course:'BS Education (major in Computer/Technology)',
+    about:`The Department of Education is accepting applications for permanent ICT Teachers under the K–12 curriculum to be deployed in public high schools nationwide. As a DepEd Teacher, you will inspire the next generation of Filipino learners by delivering quality technology education. Government employees enjoy full benefits including GSIS, PhilHealth, Pag-IBIG, and a clear career path through the Teacher classification system (T1 to Master Teacher IV).`,
+    responsibilities:[
+      'Teach ICT-related subjects aligned with the K–12 curriculum (Grades 7–12)',
+      'Prepare lesson plans, instructional materials, and assessment tools',
+      'Maintain classroom management and student progress records',
+      'Participate in school activities, faculty meetings, and professional development trainings',
+      'Collaborate with fellow teachers on cross-curricular learning activities'
+    ],
+    requirements:[
+      'Bachelor\'s degree in Education with major in Computer Technology, ICT, or related field',
+      'Must pass the Licensure Examination for Teachers (LET)',
+      'Filipino citizen, with good moral character',
+      'Proficient in basic ICT tools and educational technology platforms',
+      'Willing to be assigned to any public school nationwide'
+    ],
+    postedBy:'Marian Castillo (BS Education, Batch 2014)',
+    deadline:'Ongoing (Civil Service Commission Guidelines)',
+    setup:'Onsite — Government School Assignment',
+    level:'Entry-level (New Graduates Welcome)',
+    tags:[{label:'Government',cls:'modal-tag-maroon'},{label:'Plantilla',cls:'modal-tag-gold'},{label:'BS Education',cls:'modal-tag-orange'},{label:'Entry-level OK',cls:'modal-tag-green'}],
+    stats:[{num:'500+',lbl:'Slots'},{num:'Nationwide',lbl:'Location'},{num:'Ongoing',lbl:'Application'},{num:'SG 11–13',lbl:'Salary Grade'}]
+  }
+];
+
+// ── EVENTS DATA ───────────────────────────────────────
+const eventsData = [
+  {
+    day:'22', monthYear:'March 2026',
+    title:'PUP Homecoming 2026 — Grand Alumni Reunion',
+    location:'PUP Main Campus, Sta. Mesa, Manila',
+    type:'onsite',
+    about:`The PUP Grand Alumni Reunion is the biggest alumni gathering of the year, bringing together graduates from all batches, colleges, and campuses under one roof. Celebrate decades of friendship, academic achievement, and the enduring spirit of the Iskolar ng Bayan. This year's theme is "Balik-Tanaw: Pagmamahal sa Bayan" — a tribute to every PUP graduate who has used their education to serve the Filipino people.`,
+    agenda:[
+      'Opening ceremony with PUP Chorale and cultural presentations',
+      'Welcome address from PUP President and Alumni Association President',
+      'Grand reunion dinner and batch photo opportunities',
+      'Recognition of milestone batches (Classes of 1976, 1986, 1996, 2006, 2016)',
+      'Awarding of Outstanding Alumni by industry',
+      'Socials, networking lounge, and live entertainment'
+    ],
+    time:'4:00 PM – 10:00 PM',
+    dress:'Smart Casual / PUP Colors (Maroon & Gold)',
+    fee:'PHP 800 per person (includes dinner buffet)',
+    org:'PUP Alumni Association of the Philippines (PUPAAP)',
+    tags:[{label:'On-site',cls:'modal-tag-orange'},{label:'All Batches',cls:'modal-tag-maroon'},{label:'Dinner Included',cls:'modal-tag-gold'}],
+    stats:[{num:'1,200+',lbl:'Expected Attendees'},{num:'40+',lbl:'Batch Chapters'},{num:'PHP 800',lbl:'Registration'},{num:'March 22',lbl:'Date'}]
+  },
+  {
+    day:'05', monthYear:'April 2026',
+    title:'Career Talks: Tech Industry with PUP Alumni',
+    location:'Zoom Webinar (Link sent upon RSVP)',
+    type:'online',
+    about:`Join four distinguished PUP alumni who have built successful careers in the Philippine and global tech industry. This free webinar is open to current students, fresh graduates, and alumni seeking to pivot into technology. Speakers will share real stories of how their PUP education opened doors, the challenges they overcame, and practical career advice for the digital age.`,
+    agenda:[
+      'Panel Intro: "What Does a Career in Tech Actually Look Like in the PH?" by the moderator',
+      'Speaker 1: Karl Reyes (Google) — "Landing your first Big Tech role from a state university"',
+      'Speaker 2: Bea Lim (Paymongo) — "From BS IT to fintech startup CTO"',
+      'Speaker 3: James Aquino (Accenture) — "Consulting careers for tech graduates"',
+      'Open Q&A and mentorship matching session',
+      'Closing and distribution of e-certificates'
+    ],
+    time:'2:00 PM – 5:00 PM',
+    dress:'Casual (virtual event)',
+    fee:'Free — open to all PUP students and alumni',
+    org:'PUP Information Technology Alumni Chapter',
+    tags:[{label:'Online',cls:'modal-tag-green'},{label:'Free',cls:'modal-tag-gold'},{label:'E-Certificate',cls:'modal-tag-blue'}],
+    stats:[{num:'500+',lbl:'Expected Participants'},{num:'4',lbl:'Speakers'},{num:'Free',lbl:'Registration'},{num:'April 5',lbl:'Date'}]
+  },
+  {
+    day:'18', monthYear:'April 2026',
+    title:'BS IT Batch 2015 — 10-Year Reunion Dinner',
+    location:'Richmonde Hotel, Eastwood City, Quezon City',
+    type:'onsite',
+    about:`A decade has passed since we walked the halls of PUP together. The BS IT Class of 2015 invites all batchmates to an intimate reunion dinner at Richmonde Hotel, Eastwood. Reconnect with old friends, share how far you've come, and celebrate 10 years of growth, resilience, and success. A dedicated batch video and memory wall will be featured during the evening.`,
+    agenda:[
+      'Registration and cocktails — 6:00 PM',
+      'Welcome remarks from Class President Joanna Mercado',
+      '"Where Are We Now?" — batch career and life update video presentation',
+      'Special recognition for batchmates with notable achievements',
+      'Batch dinner, trivia games, and raffle prizes',
+      'Group photo and open networking'
+    ],
+    time:'6:00 PM – 11:00 PM',
+    dress:'Smart Formal / Semi-formal',
+    fee:'PHP 1,500 per person (includes dinner and freebies)',
+    org:'BS IT Batch 2015 Organizing Committee',
+    tags:[{label:'On-site',cls:'modal-tag-orange'},{label:'Batch 2015 Only',cls:'modal-tag-maroon'},{label:'PHP 1,500',cls:'modal-tag-gold'}],
+    stats:[{num:'~120',lbl:'Expected Attendees'},{num:'1',lbl:'Batch Only'},{num:'PHP 1,500',lbl:'Fee'},{num:'April 18',lbl:'Date'}]
+  },
+  {
+    day:'03', monthYear:'May 2026',
+    title:'Alumni Leadership Summit 2026',
+    location:'Virtual via Zoom (Chapter Officers Only)',
+    type:'online',
+    about:`The PUP Alumni Leadership Summit is the annual strategic planning conference for officers of all PUP alumni chapters nationwide and abroad. This year's summit focuses on three pillars: strengthening alumni engagement, expanding the scholarship fund, and creating more student-alumni bridge programs. Chapter presidents and officers are expected to submit their annual reports ahead of the summit.`,
+    agenda:[
+      'Opening keynote: "The State of PUP Alumni Engagement in 2026"',
+      'Chapter reports and highlights from domestic and international chapters',
+      'Workshop 1: Digital tools for chapter management and communication',
+      'Workshop 2: Maximizing alumni-student mentorship impact',
+      'Strategic planning session: 2026–2028 PUPAAP roadmap',
+      'Voting on proposed constitutional amendments and new chapter applications'
+    ],
+    time:'9:00 AM – 5:00 PM',
+    dress:'Business Casual (virtual)',
+    fee:'Free — by invitation for chapter officers',
+    org:'PUP Alumni Association of the Philippines — National Board',
+    tags:[{label:'Online',cls:'modal-tag-green'},{label:'Officers Only',cls:'modal-tag-maroon'},{label:'By Invitation',cls:'modal-tag-blue'}],
+    stats:[{num:'80+',lbl:'Chapter Officers'},{num:'40+',lbl:'Chapters'},{num:'Free',lbl:'Registration'},{num:'May 3',lbl:'Date'}]
+  },
+  {
+    day:'15', monthYear:'May 2026',
+    title:'Scholarship Fund Gala Night 2026',
+    location:'Centennial Ballroom, Manila Hotel, Manila',
+    type:'onsite',
+    about:`The annual PUP Alumni Scholarship Gala is the premier fundraising event of the alumni community. All proceeds go directly to the PUP Alumni Scholarship Fund, which provides financial assistance to academically deserving but financially challenged PUP students. Last year's Gala raised PHP 3.2 million — let's surpass that this year. Table packages and individual tickets are available.`,
+    agenda:[
+      'Champagne reception and cocktail hour — 6:00 PM',
+      'Welcome by PUPAAP President and PUP President',
+      'Video feature: "Scholars Who Changed Their Communities"',
+      'Keynote by guest speaker: Dr. Jose Padilla, Research Director, DOST',
+      'Live auction of donated artworks, travel packages, and experiences',
+      'Gala dinner, entertainment, and announcement of new scholarship recipients'
+    ],
+    time:'6:00 PM – 11:30 PM',
+    dress:'Black Tie / Formal Attire',
+    fee:'PHP 5,000/person · PHP 40,000/table of 8',
+    org:'PUP Alumni Association — Events Committee',
+    tags:[{label:'On-site',cls:'modal-tag-orange'},{label:'Formal',cls:'modal-tag-maroon'},{label:'Fundraising',cls:'modal-tag-gold'}],
+    stats:[{num:'PHP 5M+',lbl:'Target Fund'},{num:'300+',lbl:'Guests'},{num:'PHP 5,000',lbl:'Per Ticket'},{num:'May 15',lbl:'Date'}]
+  }
+];
+
+// ── ALUMNI PROFILE DATA ────────────────────────────────
+const alumniProfileData = {
+  'Maria Santos': {
+    avatarBg:'#e3f2fd', avatarColor:'#0d47a1', initials:'MS',
+    role:'Senior Software Engineer at Globe Telecom', batch:'2022', course:'BS Information Technology',
+    bio:`Maria Santos graduated Cum Laude from PUP Main Campus and immediately joined Globe Telecom's digital transformation team. In just three years, she has risen to Senior Engineer, leading the backend development of Globe's MyGlobe app which now serves over 18 million users. She is an active mentor in PUP's Student-Alumni Bridge program and regularly returns to campus to speak at career fairs.`,
+    experience:[
+      {role:'Senior Software Engineer', company:'Globe Telecom', period:'2024–Present'},
+      {role:'Junior Software Engineer', company:'Globe Telecom', period:'2022–2024'},
+      {role:'Software Development Intern', company:'Exist Software Labs', period:'2021–2022'}
+    ],
+    skills:['Node.js','React','PostgreSQL','AWS','Docker','REST APIs','Agile/Scrum','TypeScript'],
+    hometown:'Caloocan City, Metro Manila',
+    industry:'Telecommunications / Technology',
+    mentor:'Yes — open to mentoring junior developers',
+    email:'m.santos.pup@globetech.ph',
+    tags:[{label:'BS IT',cls:'modal-tag-blue'},{label:'Batch 2022',cls:'modal-tag-maroon'},{label:'Cum Laude',cls:'modal-tag-gold'}],
+    stats:[{num:'3 yrs',lbl:'Experience'},{num:'18M+',lbl:'Users Served'},{num:'5',lbl:'Mentees'},{num:'2022',lbl:'Batch'}]
+  },
+  'Juan Reyes': {
+    avatarBg:'#fce4ec', avatarColor:'#880e4f', initials:'JR',
+    role:'Technology Consultant at Accenture Philippines', batch:'2020', course:'BS Computer Science',
+    bio:`Juan Reyes is a technology consultant at Accenture Philippines, specializing in enterprise digital transformation projects for banking and retail clients. He earned his BS Computer Science degree from PUP and was a consistent Dean's Lister throughout his academic career. Juan holds an AWS Solutions Architect certification and has led projects for four Fortune 500 companies since joining Accenture.`,
+    experience:[
+      {role:'Technology Consultant', company:'Accenture Philippines', period:'2022–Present'},
+      {role:'Analyst', company:'Accenture Philippines', period:'2020–2022'},
+      {role:'Research Assistant', company:'PUP Computer Research Center', period:'2019–2020'}
+    ],
+    skills:['Java','Spring Boot','AWS','Azure','Microservices','Solution Architecture','BPMN','Agile'],
+    hometown:'Pasig City, Metro Manila',
+    industry:'IT Consulting / Enterprise Solutions',
+    mentor:'Yes — career transitions into consulting',
+    email:'juan.reyes2020@accenture.ph',
+    tags:[{label:'BS CS',cls:'modal-tag-blue'},{label:'Batch 2020',cls:'modal-tag-maroon'},{label:"Dean's Lister",cls:'modal-tag-gold'}],
+    stats:[{num:'5 yrs',lbl:'Experience'},{num:'4',lbl:'Fortune 500 Clients'},{num:'2',lbl:'Certifications'},{num:'2020',lbl:'Batch'}]
+  },
+  'Ana Cruz': {
+    avatarBg:'#e8f5e9', avatarColor:'#1b5e20', initials:'AC',
+    role:'Brand Manager at Jollibee Foods Corporation', batch:'2018', course:'BS Business Administration',
+    bio:`Ana Cruz manages brand campaigns for Jollibee's flagship chicken products, overseeing multi-million peso marketing budgets and cross-functional teams across digital, PR, and in-store activations. A graduate of PUP's BS Business Administration program, she spent her early career in marketing agencies before joining the world's most loved Filipino fast-food brand. She was recognized as one of Marketing Week Philippines' "30 Under 30" in 2024.`,
+    experience:[
+      {role:'Brand Manager', company:'Jollibee Foods Corporation', period:'2023–Present'},
+      {role:'Senior Marketing Executive', company:'Publicis Manila', period:'2021–2023'},
+      {role:'Marketing Associate', company:'BBDO Guerrero', period:'2018–2021'}
+    ],
+    skills:['Brand Strategy','Digital Marketing','Campaign Management','Consumer Insights','Budget Management','Copywriting','Social Media'],
+    hometown:'Quezon City, Metro Manila',
+    industry:'Food & Beverage / Marketing',
+    mentor:'Yes — marketing and brand management careers',
+    email:'ana.cruz.jfc@jollibee.com.ph',
+    tags:[{label:'BS Business Admin',cls:'modal-tag-orange'},{label:'Batch 2018',cls:'modal-tag-maroon'},{label:'30 Under 30',cls:'modal-tag-gold'}],
+    stats:[{num:'7 yrs',lbl:'Experience'},{num:'PHP 50M+',lbl:'Budget Managed'},{num:'12',lbl:'Campaigns Led'},{num:'2018',lbl:'Batch'}]
+  },
+  'Carlo Bautista': {
+    avatarBg:'#fff3e0', avatarColor:'#e65100', initials:'CB',
+    role:'Structural Engineer at DMCI Holdings', batch:'2015', course:'BS Civil Engineering',
+    bio:`Carlo Bautista is a licensed Civil Engineer and Structural Engineer with over nine years of experience in the construction of high-rise residential and commercial buildings across Metro Manila. He passed the Civil Engineering board exam on his first take in 2015 with a rating in the top 10% nationally. At DMCI, Carlo has served as lead structural engineer for five major projects including the Lumiere Residences in Pasig and Stanford Suites in Quezon City.`,
+    experience:[
+      {role:'Structural Engineer III', company:'DMCI Holdings', period:'2020–Present'},
+      {role:'Structural Engineer I', company:'DMCI Holdings', period:'2015–2020'}
+    ],
+    skills:['STAAD Pro','AutoCAD','Structural Analysis','NSCP 2015','Project Management','Seismic Design','Foundation Engineering'],
+    hometown:'Manila City, Metro Manila',
+    industry:'Construction / Real Estate',
+    mentor:'Yes — engineering board exam review and career',
+    email:'carlo.bautista@dmciholdings.com.ph',
+    tags:[{label:'BS Civil Eng.',cls:'modal-tag-blue'},{label:'Batch 2015',cls:'modal-tag-maroon'},{label:'Licensed CE',cls:'modal-tag-gold'}],
+    stats:[{num:'9 yrs',lbl:'Experience'},{num:'5',lbl:'Major Projects'},{label:'Top 10%',num:'Board'},{num:'2015',lbl:'Batch'}]
+  },
+  'Lea Garcia': {
+    avatarBg:'#f3e5f5', avatarColor:'#4a148c', initials:'LG',
+    role:'Public School Teacher at DepEd Manila', batch:'2024', course:'BS Education',
+    bio:`Lea Garcia is a fresh PUP graduate and newly minted licensed teacher deployed at Baseco Compound Elementary School in Manila under DepEd's Brigada Eskwela and Teach for the Philippines alignment. Despite being new to the profession, Lea has already been recognized by her school principal for innovative use of technology in early childhood literacy instruction. She holds a rating of 87% in the 2024 Licensure Examination for Teachers.`,
+    experience:[
+      {role:'Grade 3 Teacher', company:'DepEd — Baseco Compound Elementary School', period:'2024–Present'},
+      {role:'Student Teacher (Practicum)', company:'PUP Laboratory School', period:'2023–2024'}
+    ],
+    skills:['Early Childhood Education','Literacy Instruction','Classroom Management','Educational Technology','Lesson Planning','Inclusive Education'],
+    hometown:'Tondo, Manila',
+    industry:'Education / Public Service',
+    mentor:'Open to peer mentorship and advice',
+    email:'lea.garcia.deped@gmail.com',
+    tags:[{label:'BS Education',cls:'modal-tag-orange'},{label:'Batch 2024',cls:'modal-tag-maroon'},{label:'New Graduate',cls:'modal-tag-green'}],
+    stats:[{num:'1 yr',lbl:'Experience'},{num:'87%',lbl:'LET Rating'},{num:'40+',lbl:'Students'},{num:'2024',lbl:'Batch'}]
+  },
+  'Ryan Torres': {
+    avatarBg:'#e0f7fa', avatarColor:'#006064', initials:'RT',
+    role:'Operations Team Lead at Sitel Group', batch:'2019', course:'BS Information Technology',
+    bio:`Ryan Torres leads a team of 22 customer service specialists at Sitel Group's Eastwood operations center, handling tier-2 and tier-3 technical support for a major US telecommunications client. He started as a frontline agent in 2019 and worked his way up to Team Lead within five years through consistent top performance ratings. Ryan also volunteers as an alumni chapter officer for the PUP Quezon City branch.`,
+    experience:[
+      {role:'Operations Team Lead', company:'Sitel Group', period:'2023–Present'},
+      {role:'Senior Technical Support Specialist', company:'Sitel Group', period:'2021–2023'},
+      {role:'Technical Support Associate', company:'Sitel Group', period:'2019–2021'}
+    ],
+    skills:['Team Leadership','ITIL Framework','Technical Support','Salesforce CRM','Quality Assurance','Coaching','BPO Operations'],
+    hometown:'Fairview, Quezon City',
+    industry:'BPO / Customer Service',
+    mentor:'Yes — BPO career growth and team leadership',
+    email:'ryan.torres.sitel@gmail.com',
+    tags:[{label:'BS IT',cls:'modal-tag-blue'},{label:'Batch 2019',cls:'modal-tag-maroon'},{label:'Team Lead',cls:'modal-tag-green'}],
+    stats:[{num:'6 yrs',lbl:'Experience'},{num:'22',lbl:'Team Size'},{num:'Top 5%',lbl:'Performance'},{num:'2019',lbl:'Batch'}]
+  },
+  'Nina Flores': {
+    avatarBg:'#fff8e1', avatarColor:'#f57f17', initials:'NF',
+    role:'Audit Senior at SGV & Co. (EY Philippines)', batch:'2022', course:'BS Accountancy',
+    bio:`Nina Flores is an Audit Senior at SGV & Co., the Philippine member firm of Ernst & Young Global, one of the world's Big Four accounting firms. She passed the CPA Board Examination in May 2022 with a rating of 91.40% and joined SGV immediately upon licensure. Nina has served as external auditor for several publicly listed companies in the retail, energy, and financial services sectors. She is currently pursuing her ACCA qualification.`,
+    experience:[
+      {role:'Audit Senior', company:'SGV & Co. (EY Philippines)', period:'2024–Present'},
+      {role:'Audit Associate', company:'SGV & Co. (EY Philippines)', period:'2022–2024'}
+    ],
+    skills:['External Audit','PFRS/IFRS','Risk Assessment','Financial Reporting','Internal Controls','SAP','MS Excel','ACCA (in progress)'],
+    hometown:'San Juan, Metro Manila',
+    industry:'Accounting / Audit',
+    mentor:'Yes — CPA board exam preparation and Big 4 careers',
+    email:'nina.flores.cpa@sgv.ph',
+    tags:[{label:'BS Accountancy',cls:'modal-tag-orange'},{label:'Batch 2022',cls:'modal-tag-maroon'},{label:'CPA — 91.4%',cls:'modal-tag-gold'}],
+    stats:[{num:'3 yrs',lbl:'Experience'},{num:'91.4%',lbl:'Board Rating'},{num:'Big 4',lbl:'Employer'},{num:'2022',lbl:'Batch'}]
+  },
+  'Marco Diaz': {
+    avatarBg:'#fbe9e7', avatarColor:'#bf360c', initials:'MD',
+    role:'Product Manager at Uber Philippines', batch:'2017', course:'BS Computer Science',
+    bio:`Marco Diaz is a Product Manager at Uber Philippines, responsible for the driver experience vertical covering Luzon. He transitioned from software engineering to product management in 2021 after completing an online MBA. Marco has shipped features used by over 500,000 Uber driver-partners in the Philippines and presented at the 2024 Asia Product Summit in Singapore. He is a strong advocate for tech careers from state universities.`,
+    experience:[
+      {role:'Product Manager, Driver Experience', company:'Uber Philippines', period:'2021–Present'},
+      {role:'Software Engineer II', company:'Uber Philippines', period:'2019–2021'},
+      {role:'Junior Developer', company:'Exist Software Labs', period:'2017–2019'}
+    ],
+    skills:['Product Strategy','Roadmapping','A/B Testing','SQL','Figma','Stakeholder Management','JIRA','Data Analytics','User Research'],
+    hometown:'Mandaluyong City, Metro Manila',
+    industry:'Technology / Mobility',
+    mentor:'Yes — transitioning from engineering to product management',
+    email:'marco.diaz.uber@gmail.com',
+    tags:[{label:'BS CS',cls:'modal-tag-blue'},{label:'Batch 2017',cls:'modal-tag-maroon'},{label:'Ex-Engineer→PM',cls:'modal-tag-gold'}],
+    stats:[{num:'8 yrs',lbl:'Experience'},{num:'500K+',lbl:'Users Impacted'},{num:'3',lbl:'Major Features Shipped'},{num:'2017',lbl:'Batch'}]
+  }
+};
+
+// ── NEWS DATA ─────────────────────────────────────────
+const newsData = [
+  {
+    emoji:'🎓', category:'Institutional',
+    title:'PUP opens new Engineering and Architecture Building in Sta. Mesa',
+    date:'March 10, 2026', author:'PUP News and Information Office',
+    lead:`The Polytechnic University of the Philippines officially inaugurated its new Engineering and Architecture Complex (EAC) at its Sta. Mesa, Manila main campus on March 8, 2026 — a landmark development that signals a new chapter in the university's commitment to quality technical education.`,
+    body1:`The six-story, PHP 380-million structure houses state-of-the-art laboratories for Civil, Electrical, Electronics, and Mechanical Engineering, as well as design studios for the College of Architecture and Fine Arts. The building was funded through a combination of CHED modernization grants and the national university's infrastructure budget under the Bagong Pilipinas program.`,
+    body2:`PUP President Dr. Margarita Santos led the ribbon-cutting ceremony alongside CHED Chairperson Dr. Prospero De Vera III and representatives from the Department of Public Works and Highways. Over 1,500 faculty, students, and alumni attended the event at the university's Freedom Park.`,
+    body3:`"This building is not just steel and glass — it is a declaration that the children of workers, farmers, and the poor deserve the same quality of facilities as any elite institution in this country," Dr. Santos said in her address. The EAC is expected to serve over 8,000 engineering and architecture students starting in the second semester of Academic Year 2025–2026.`,
+    quote:`"This building is a declaration that the children of workers, farmers, and the poor deserve the same quality of facilities as any elite institution."`,
+    quoteAttr:'Dr. Margarita Santos, PUP President',
+    highlights:[
+      'Six-story PHP 380M building funded by CHED and national budget',
+      'Houses labs for Civil, Electrical, Electronics, and Mechanical Engineering',
+      'Includes design studios for Architecture and Fine Arts students',
+      'Expected to serve 8,000+ students starting S.Y. 2025–2026',
+      'Largest infrastructure investment in PUP history'
+    ]
+  },
+  {
+    emoji:'🏅', category:'Achievement',
+    title:'PUP alumna tops the 2025 CPA Board Examination nationwide',
+    date:'March 5, 2026', author:'PUP Alumni Relations Office',
+    lead:`Angela Kristine Dela Rosa, a 2025 graduate of the Polytechnic University of the Philippines' Bachelor of Science in Accountancy program, emerged as the top passer of the November 2025 Certified Public Accountant (CPA) Licensure Examination with a rating of 95.67%.`,
+    body1:`The Professional Regulation Commission (PRC) announced the results on February 28, 2026, revealing that Dela Rosa bested 8,241 examinees who sat for the national board exam. Her score of 95.67% is the highest CPA board rating achieved by any PUP alumna in the past 15 years, surpassing the previous record of 94.80% set in 2011.`,
+    body2:`Dela Rosa, who graduated Summa Cum Laude from PUP's College of Business, credited her success to the rigorous preparation provided by her PUP professors and review center training. "Every professor pushed us beyond the textbook. They made us think like CPAs before we even sat for the exam," she told PUP News.`,
+    body3:`She is now employed as an Audit Associate at SGV & Co. (EY Philippines). Her achievement adds to PUP's growing list of board exam topnotchers across engineering, law, nursing, and accountancy, reinforcing the university's reputation as a premier institution for producing licensed professionals from all walks of life.`,
+    quote:`"Every professor pushed us beyond the textbook. They made us think like CPAs before we even sat for the exam."`,
+    quoteAttr:'Angela Kristine Dela Rosa, CPA Board Topnotcher 2025',
+    highlights:[
+      '95.67% — highest CPA board rating in PUP history in 15 years',
+      '8,241 examinees nationwide; Dela Rosa ranked #1',
+      'Graduated Summa Cum Laude from PUP College of Business',
+      'Now employed as Audit Associate at SGV & Co. (Big 4)',
+      'PUP\'s overall passing rate: 78.4% vs national average of 56.2%'
+    ]
+  },
+  {
+    emoji:'💡', category:'Community',
+    title:'Alumni Scholarship Fund surpasses PHP 5 million milestone',
+    date:'February 28, 2026', author:'PUP Alumni Association of the Philippines',
+    lead:`The PUP Alumni Scholarship Fund (ASF) has officially crossed the PHP 5 million mark in total accumulated contributions since its relaunch in 2021, enabling the association to fund 142 student scholars across 11 PUP campuses in the current academic year.`,
+    body1:`The milestone was announced during the February 2026 PUPAAP Board Meeting, where Treasurer Atty. Marco Villanueva presented the fund's financial summary. The PHP 5.12 million in total contributions came from 2,840 individual donors, 18 alumni chapter fundraising events, and four major corporate sponsors, including two companies founded and led by PUP alumni.`,
+    body2:`The ASF provides PHP 15,000 per semester to qualifying scholars, covering tuition supplements, textbooks, and a monthly allowance. To date, 38 ASF scholars have already graduated and are now employed professionals — several of whom have become recurring donors themselves, completing a cycle of giving that the association calls "Bayani ng Iskolar."`,
+    body3:`PUPAAP President Engr. Romeo Aquino called the milestone "a proof of concept that alumni solidarity is not just a motto — it is a measurable force." The fund is targeting PHP 10 million by 2027 to expand its annual scholarship slots from 142 to 300.`,
+    quote:`"Alumni solidarity is not just a motto — it is a measurable force for change in the lives of our students."`,
+    quoteAttr:'Engr. Romeo Aquino, PUPAAP President',
+    highlights:[
+      'PHP 5.12 million raised from 2,840 individual donors',
+      '142 active scholars across 11 PUP campuses in 2025–2026',
+      'PHP 15,000/semester per scholar (tuition + allowance)',
+      '38 ASF scholars already graduated and employed',
+      'Target: PHP 10M by 2027 to fund 300 scholars/year'
+    ]
+  },
+  {
+    emoji:'🤝', category:'Partnership',
+    title:'PUP Alumni signs MOU with 12 tech companies for OJT placements',
+    date:'February 20, 2026', author:'PUP Office of External Linkages',
+    lead:`The PUP Alumni Association of the Philippines, in coordination with the PUP Office of External Linkages, signed Memoranda of Understanding (MOUs) with 12 technology companies to provide guaranteed OJT and internship placements for PUP students starting in the second semester of A.Y. 2025–2026.`,
+    body1:`The signing ceremony was held at the PUP Main Campus Bulwagang Balagtas, attended by HR representatives and senior alumni officers from all 12 partner companies. Among the signatories were Paymongo, KServico Technologies, Sitel Group Philippines, Sprout Solutions, Great Deals E-Commerce, and seven other tech firms, all of which are either co-founded or led by PUP alumni.`,
+    body2:`Under the MOUs, each company commits to accepting a minimum of 10 PUP interns per semester, providing structured mentorship, competitive stipends of at least PHP 500/day, and priority hiring consideration upon graduation. The agreement also includes a clause allowing interns to convert their OJT to part-time employment during their final semester.`,
+    body3:`"We want to make sure that PUP graduates go from classroom to career without losing momentum," said Bea Lim, CTO of Paymongo and the initiative's lead advocate. The program is expected to benefit over 600 students in its first year of implementation.`,
+    quote:`"We want to make sure that PUP graduates go from classroom to career without losing momentum."`,
+    quoteAttr:'Bea Lim, CTO of Paymongo & PUP BS IT Batch 2010',
+    highlights:[
+      '12 tech companies signed MOUs for guaranteed OJT placements',
+      'Minimum 10 interns per company per semester',
+      'Stipend of at least PHP 500/day — well above industry norm',
+      '600+ students expected to benefit in Year 1',
+      'Priority hiring clause included for graduating interns'
+    ]
+  },
+  {
+    emoji:'🌏', category:'Global',
+    title:'Alumni chapters now active in Japan, Canada, UAE, and Australia',
+    date:'February 14, 2026', author:'PUPAAP International Affairs Committee',
+    lead:`The PUP Alumni Association of the Philippines has formally recognized four new international alumni chapters — in Japan, Canada, the United Arab Emirates, and Australia — bringing the total number of active global chapters to 11, spanning four continents.`,
+    body1:`The Japan chapter, based in Osaka, was founded by a group of 24 PUP alumni working in automotive manufacturing, nursing, and engineering under Japan's Specified Skilled Worker program. The Canada chapter, registered in Toronto, is anchored by a network of over 80 PUP graduates in the healthcare, information technology, and financial services sectors.`,
+    body2:`The UAE chapter in Dubai has the fastest growth trajectory of the four new chapters, with 63 founding members from across the Emirates representing engineering, construction, and BPO industries. Australia's Sydney chapter was spearheaded by alumni in the aged care, nursing, and education sectors — fields where Filipino workers have achieved significant presence in recent years.`,
+    body3:`All four chapters have committed to participating in the annual Alumni Leadership Summit, contributing to the Scholarship Fund, and establishing virtual mentorship connections with PUP students back home. PUPAAP International Chair Attorney Liza Reyes noted that having active chapters globally "positions PUP as a truly international university of the people."`,
+    quote:`"Having active chapters globally positions PUP as a truly international university of the people."`,
+    quoteAttr:'Atty. Liza Reyes, PUPAAP International Affairs Chair',
+    highlights:[
+      '4 new international chapters: Japan, Canada, UAE, Australia',
+      'Total global chapters now at 11 across 4 continents',
+      'Japan chapter anchored by Skilled Worker program graduates',
+      'Dubai chapter fastest-growing with 63 founding members',
+      'All chapters connected to home scholarship and mentorship programs'
+    ]
+  },
+  {
+    emoji:'📜', category:'Policy',
+    title:'New Alumni ID policy: digital and physical IDs now available',
+    date:'January 30, 2026', author:'PUP Office of Alumni Relations',
+    lead:`The PUP Office of Alumni Relations, in partnership with the PUP Alumni Association of the Philippines, has officially launched a new Alumni Identification Card system that provides both a physical card and a verified digital ID — accessible online through the new PUP Alumni Connect portal.`,
+    body1:`Under the new policy approved by the PUP Board of Regents in December 2025, all graduates from 1960 to the present are eligible to apply for an official Alumni ID at no cost for first-time applicants. The ID is valid for three years and can be renewed online. The card serves as an official credential for accessing alumni benefits including library access, discounts from partner establishments, and priority RSVP for university events.`,
+    body2:`The digital ID is issued within 72 hours of application approval and can be stored on a smartphone for contactless presentation. The physical card, printed on PVC with holographic security features and a QR code linked to the alumni's verified record, is mailed within 10–15 business days to the alumni's registered address.`,
+    body3:`"We want every Iskolar ng Bayan — whether you graduated last year or 40 years ago — to have a tangible connection to this university," said Director Maria Lourdes Bautista of the Office of Alumni Relations. The portal's online application form is now live at alumni.pup.edu.ph. Applications are processed on a rolling basis throughout the year.`,
+    quote:`"We want every Iskolar ng Bayan — whether you graduated last year or 40 years ago — to have a tangible connection to this university."`,
+    quoteAttr:'Dir. Maria Lourdes Bautista, PUP Office of Alumni Relations',
+    highlights:[
+      'Free first-time Alumni ID for all graduates from 1960 to present',
+      'Digital ID issued within 72 hours of approval',
+      'Physical PVC card with holographic security and QR code',
+      'Valid for 3 years, renewable online via Alumni Connect portal',
+      'Grants access to library, partner discounts, and priority event RSVP'
+    ]
+  }
+];
+
+// ════════════════════════════════════════════════════
+//  MODAL OPEN / CLOSE UTILITIES
+// ════════════════════════════════════════════════════
+function openModal(id){
+  const overlay=document.getElementById(id);
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  const overlay=document.getElementById(id);
+  overlay.classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeModalOnBg(e,id){
+  if(e.target===document.getElementById(id))closeModal(id);
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    ['modal-job','modal-event','modal-alumni','modal-news'].forEach(closeModal);
+  }
+});
+
+// ── HELPERS ───────────────────────────────────────────
+function setTags(elId, tags){
+  const el=document.getElementById(elId);
+  el.innerHTML=tags.map(t=>`<span class="modal-tag ${t.cls}">${t.label}</span>`).join('');
+}
+function setStats(elId, stats){
+  const el=document.getElementById(elId);
+  el.innerHTML=stats.map(s=>`<div class="modal-stat"><div class="modal-stat-num">${s.num}</div><div class="modal-stat-lbl">${s.lbl}</div></div>`).join('');
+}
+function setList(elId, items){
+  const el=document.getElementById(elId);
+  el.innerHTML=items.map(i=>`<li>${i}</li>`).join('');
+}
+
+// ── OPEN JOB MODAL ─────────────────────────────────────
+function openJobModal(idx){
+  const d=jobsData[idx];
+  document.getElementById('mj-logo').textContent=d.logo;
+  document.getElementById('mj-logo').style.background=d.logoBg;
+  document.getElementById('mj-logo').style.color=d.logoColor;
+  document.getElementById('mj-title').textContent=d.title;
+  document.getElementById('mj-company').textContent=d.company+' — '+d.location;
+  setTags('mj-tags',d.tags);
+  setStats('mj-stats',d.stats);
+  document.getElementById('mj-about').textContent=d.about;
+  setList('mj-responsibilities',d.responsibilities);
+  setList('mj-requirements',d.requirements);
+  document.getElementById('mj-posted-by').textContent=d.postedBy;
+  document.getElementById('mj-deadline').textContent=d.deadline;
+  document.getElementById('mj-setup').textContent=d.setup;
+  document.getElementById('mj-level').textContent=d.level;
+  openModal('modal-job');
+  document.getElementById('modal-job-box').scrollTop=0;
+}
+
+// ── OPEN EVENT MODAL ───────────────────────────────────
+function openEventModal(idx){
+  const d=eventsData[idx];
+  document.getElementById('me-day').textContent=d.day;
+  document.getElementById('me-monthyear').textContent=d.monthYear;
+  document.getElementById('me-title').textContent=d.title;
+  document.getElementById('me-location').textContent='📍 '+d.location;
+  setTags('me-tags',d.tags);
+  setStats('me-stats',d.stats);
+  document.getElementById('me-about').textContent=d.about;
+  setList('me-agenda',d.agenda);
+  document.getElementById('me-time').textContent=d.time;
+  document.getElementById('me-dress').textContent=d.dress;
+  document.getElementById('me-fee').textContent=d.fee;
+  document.getElementById('me-org').textContent=d.org;
+  openModal('modal-event');
+  document.getElementById('modal-event-box').scrollTop=0;
+}
+
+// ── OPEN ALUMNI MODAL ──────────────────────────────────
+function openAlumniModal(name){
+  const d=alumniProfileData[name];
+  if(!d)return;
+  const av=document.getElementById('ma-avatar');
+  av.textContent=d.initials;
+  av.style.background=d.avatarBg;
+  av.style.color=d.avatarColor;
+  document.getElementById('ma-name').textContent=name;
+  document.getElementById('ma-role').textContent=d.role;
+  setTags('ma-tags',d.tags);
+  setStats('ma-stats',d.stats);
+  document.getElementById('ma-bio').textContent=d.bio;
+  const expEl=document.getElementById('ma-experience');
+  expEl.innerHTML=d.experience.map(e=>`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:.7rem 0;border-bottom:1px solid rgba(0,0,0,.06);">
+      <div>
+        <div style="font-size:14px;font-weight:500;">${e.role}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">${e.company}</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);white-space:nowrap;margin-left:1rem;">${e.period}</div>
+    </div>`).join('');
+  const skillsEl=document.getElementById('ma-skills');
+  skillsEl.innerHTML=d.skills.map(s=>`<span class="modal-tag modal-tag-blue" style="border-radius:6px;">${s}</span>`).join('');
+  document.getElementById('ma-hometown').textContent=d.hometown;
+  document.getElementById('ma-industry').textContent=d.industry;
+  document.getElementById('ma-mentor').textContent=d.mentor;
+  document.getElementById('ma-email').textContent=d.email;
+  openModal('modal-alumni');
+  document.getElementById('modal-alumni-box').scrollTop=0;
+}
+
+// ── OPEN NEWS MODAL ────────────────────────────────────
+function openNewsModal(idx){
+  const d=newsData[idx];
+  document.getElementById('mn-hero').childNodes[0].textContent=d.emoji;
+  document.getElementById('mn-category').textContent=d.category;
+  document.getElementById('mn-title').textContent=d.title;
+  document.getElementById('mn-meta').textContent='By '+d.author+' · '+d.date;
+  document.getElementById('mn-lead').textContent=d.lead;
+  document.getElementById('mn-body1').textContent=d.body1;
+  document.getElementById('mn-body2').textContent=d.body2;
+  document.getElementById('mn-body3').textContent=d.body3;
+  document.getElementById('mn-quote').textContent=d.quote;
+  document.getElementById('mn-quote-attr').textContent='— '+d.quoteAttr;
+  setList('mn-highlights',d.highlights);
+  openModal('modal-news');
+  document.getElementById('modal-news-box').scrollTop=0;
+}
+
+</script>
+</body>
+</html>
